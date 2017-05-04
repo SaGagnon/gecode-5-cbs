@@ -2611,7 +2611,7 @@ namespace Gecode {
     void afc_set(double a);
     //@}
 
-  private:
+  public:
     /**
      * \brief Class to iterate over propagators of a space
      *
@@ -2637,6 +2637,7 @@ namespace Gecode {
       /// Return propagator
       Propagator& propagator(void) const;
     };
+  private:
     /**
      * \brief Class to iterate over scheduled propagators of a space
      *

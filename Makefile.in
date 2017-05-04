@@ -318,9 +318,9 @@ INTSRC0 = \
 	exec/when.cpp element/pair.cpp \
 	linear/int-post.cpp linear-int.cpp \
 	linear/bool-post.cpp linear-bool.cpp \
-	branch.cpp distinct/eqite.cpp distinct.cpp sorted.cpp gcc.cpp \
-	channel.cpp channel/link-single.cpp channel/link-multi.cpp \
-	unshare.cpp sequence.cpp \
+	branch.cpp distinct/eqite.cpp distinct/cbs.cpp distinct.cpp \
+	sorted.cpp gcc.cpp channel.cpp channel/link-single.cpp \
+	channel/link-multi.cpp unshare.cpp sequence.cpp \
 	bin-packing.cpp bin-packing/propagate.cpp \
 	bin-packing/conflict-graph.cpp \
 	unary.cpp cumulative.cpp cumulatives.cpp \
@@ -359,7 +359,7 @@ INTHDR0 = \
 	distinct/graph.hpp distinct/dom-ctrl.hpp \
 	distinct/bnd.hpp distinct/dom.hpp \
 	distinct/val.hpp distinct/ter-dom.hpp \
-	distinct/eqite.hpp \
+	distinct/eqite.hpp distinct/cbs.hpp \
 	dom/range.hpp dom/set.hpp \
 	element/int.hpp element/view.hpp element/pair.hpp \
 	gcc/bnd.hpp gcc/dom.hpp gcc/bnd-sup.hpp gcc/dom-sup.hpp \

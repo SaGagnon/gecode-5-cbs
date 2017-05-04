@@ -74,6 +74,12 @@ namespace Gecode { namespace Int { namespace Distinct {
   }
 
   template<class View>
+  void
+  Dom<View>::cbs(Space& home, CBS& densities) const {
+    cbsdistinct(home,x,densities);
+  }
+
+  template<class View>
   Actor*
   Dom<View>::copy(Space& home, bool share) {
     return new (home) Dom<View>(home,share,*this);

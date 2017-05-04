@@ -69,6 +69,13 @@ namespace Gecode { namespace Int { namespace Distinct {
     : Propagator(home,share,p), min_x(p.min_x), max_x(p.max_x) {
     x.update(home,share,p.x);
     y.update(home,share,p.y);
+
+  }
+
+  template<class View>
+  void
+  Bnd<View>::cbs(Space& home, CBS& densities) const {
+    cbsdistinct(home,x,densities);
   }
 
   template<class View>

@@ -74,6 +74,8 @@ namespace Gecode { namespace Int { namespace Distinct {
     /// Constructor for cloning \a p
     Val(Space& home, bool share, Val<View>& p);
   public:
+    /// Counting base search densities computation for branching
+    virtual void cbs(Space& home, CBS& densities) const;
     /// Copy propagator during cloning
     virtual Actor*     copy(Space& home, bool share);
     /// Perform propagation
@@ -81,6 +83,18 @@ namespace Gecode { namespace Int { namespace Distinct {
     /// Post propagator for view array \a x
     static ExecStatus post(Home home, ViewArray<View>& x);
   };
+
+
+  /**
+   * \brief Counting base search for distinct propagators
+   *
+   * The algorithm is taken from:
+   *        G. Pesant, C.-G. Quimper and A. Zanarini
+   *        Counting-Based Search: Branching Heuristics for Constraint
+   *        Satisfaction Problems
+   */
+  template<class View>
+  void cbsdistinct(Space& home, const ViewArray<View>& x, CBS& densities);
 
   /**
    * \brief Eliminate singletons by naive value propagation
@@ -141,6 +155,8 @@ namespace Gecode { namespace Int { namespace Distinct {
     /// Constructor for cloning \a p
     Bnd(Space& home, bool share, Bnd<View>& p);
   public:
+    /// Counting base search densities computation for branching
+    virtual void cbs(Space& home, CBS& densities) const;
     /// Post propagator for view array \a x
     static ExecStatus post(Home home, ViewArray<View>& x);
     /// Perform propagation
@@ -260,6 +276,8 @@ namespace Gecode { namespace Int { namespace Distinct {
     /// Constructor for posting
     Dom(Home home, ViewArray<View>& x);
   public:
+    /// Counting base search densities computation for branching
+    virtual void cbs(Space& home, CBS& densities) const;
     /// Perform propagation
     virtual ExecStatus propagate(Space& home, const ModEventDelta& med);
     /**
@@ -335,6 +353,7 @@ namespace Gecode { namespace Int { namespace Distinct {
 
 }}}
 
+#include <gecode/int/distinct/cbs.hpp>
 #include <gecode/int/distinct/val.hpp>
 #include <gecode/int/distinct/bnd.hpp>
 #include <gecode/int/distinct/ter-dom.hpp>

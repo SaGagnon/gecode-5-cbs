@@ -1006,6 +1006,14 @@ namespace Gecode {
   };
 
   /**
+   * \brief Interface class to set densities for each variable and value.
+   */
+  class CBS {
+  public:
+    virtual void set(VarImpBase* x, int val, double density) = 0;
+  };
+
+  /**
    * \brief Base-class for propagators
    * \ingroup TaskActor
    */
@@ -1129,6 +1137,8 @@ namespace Gecode {
     //@{
     /// Return the accumlated failure count
     double afc(const Space& home) const;
+    /// Set densities for each variables and values
+    virtual void cbs(Space& home, CBS& densities) const;
     //@}
     /// \name Id and group support
     //@{
@@ -3458,6 +3468,9 @@ namespace Gecode {
   Propagator::afc(const Space& home) const {
     return const_cast<Space&>(home).gpi.afc(const_cast<Propagator&>(*this).gpi());
   }
+
+  forceinline void
+  Propagator::cbs(Space& home, CBS& densities) const { }
 
   forceinline unsigned int
   Propagator::id(void) const {

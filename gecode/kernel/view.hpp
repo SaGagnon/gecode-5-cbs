@@ -138,6 +138,8 @@ namespace Gecode {
     static bool varderived(void);
     /// Return variable implementation of view
     VarImpType* varimp(void) const;
+    /// Return id of implementation of view
+    unsigned int id(void) const;
     /// Return degree (number of subscribed propagators and advisors)
     unsigned int degree(void) const;
     /// Return accumulated failure count
@@ -231,6 +233,8 @@ namespace Gecode {
     static bool varderived(void);
     /// Return variable implementation of view
     VarImpType* varimp(void) const;
+    /// Return id of implementation of view
+    unsigned int id(void) const;
     /// Return view from which this view is derived
     View base(void) const;
     /// Return degree (number of subscribed propagators)
@@ -451,6 +455,11 @@ namespace Gecode {
   VarImpView<Var>::varimp(void) const {
     return x;
   }
+  template<class Var>
+  forceinline unsigned int
+  VarImpView<Var>::id(void) const {
+    return x->id();
+  }
  template<class Var>
   forceinline unsigned int
   VarImpView<Var>::degree(void) const {
@@ -542,6 +551,12 @@ namespace Gecode {
   forceinline typename View::VarImpType*
   DerivedView<View>::varimp(void) const {
     return x.varimp();
+  }
+
+  template<class View>
+  forceinline unsigned int
+  DerivedView<View>::id(void) const {
+    return x.id();
   }
 
   template<class View>

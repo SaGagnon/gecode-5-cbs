@@ -282,7 +282,7 @@ namespace Gecode { namespace Int { namespace Distinct {
       // Normalization
       for (ViewValues<View> val(viewArray[i]); val(); ++val) {
         double d = solcounts(val.val()) / normalization;
-        densities.set(viewArray[i].id(),val.val(),d);
+        densities.set(viewArray[i].id(),viewArray[i].baseval(val.val()),d);
       }
     }
   }

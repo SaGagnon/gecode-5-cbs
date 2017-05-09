@@ -70,6 +70,10 @@ namespace Gecode { namespace Int {
   IntView::val(void) const {
     return x->val();
   }
+  forceinline int
+  IntView::baseval(int val) const {
+    return val;
+  }
 
   forceinline unsigned int
   IntView::size(void) const {

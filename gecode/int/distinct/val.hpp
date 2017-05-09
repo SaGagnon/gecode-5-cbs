@@ -158,7 +158,7 @@ namespace Gecode { namespace Int { namespace Distinct {
 
   template<class View>
   void
-  Val<View>::cbs(Space& home, CBS& densities) const {
+  Val<View>::cbs(const Space& home, CBS& densities) const {
     cbsdistinct(home,x,densities);
   }
 

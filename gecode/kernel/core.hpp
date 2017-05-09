@@ -1142,7 +1142,7 @@ namespace Gecode {
     /// Return the accumlated failure count
     double afc(const Space& home) const;
     /// Set densities for each variables and values
-    virtual void cbs(Space& home, CBS& densities) const;
+    virtual void cbs(const Space& home, CBS& densities) const;
     //@}
     /// \name Id and group support
     //@{
@@ -3477,7 +3477,7 @@ namespace Gecode {
   }
 
   forceinline void
-  Propagator::cbs(Space& home, CBS& densities) const { }
+  Propagator::cbs(const Space& home, CBS& densities) const { }
 
   forceinline unsigned int
   Propagator::id(void) const {

@@ -1142,7 +1142,7 @@ namespace Gecode {
     /// Return the accumlated failure count
     double afc(const Space& home) const;
     /// Set densities for each variables and values
-    virtual void cbs(const Space& home, CBS& densities) const;
+    virtual bool cbs(const Space& home, CBS* densities) const;
     //@}
     /// \name Id and group support
     //@{
@@ -3476,8 +3476,13 @@ namespace Gecode {
     return const_cast<Space&>(home).gpi.afc(const_cast<Propagator&>(*this).gpi());
   }
 
-  forceinline void
-  Propagator::cbs(const Space& home, CBS& densities) const { }
+  forceinline bool
+  Propagator::cbs(const Space& home, CBS* densities) const {
+    // Does nothing, so we return false. This behavior can be exploited for
+    // testing if we have propagators that overloaded this method when
+    // branching.
+    return false;
+  }
 
   forceinline unsigned int
   Propagator::id(void) const {

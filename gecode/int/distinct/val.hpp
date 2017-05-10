@@ -157,9 +157,9 @@ namespace Gecode { namespace Int { namespace Distinct {
     : NaryPropagator<View,PC_INT_VAL>(home,share,p) {}
 
   template<class View>
-  void
-  Val<View>::cbs(const Space& home, CBS& densities) const {
-    cbsdistinct(home,x,densities);
+  bool
+  Val<View>::cbs(const Space& home, CBS* densities) const {
+    return cbsdistinct(home,x,densities);
   }
 
   template<class View>

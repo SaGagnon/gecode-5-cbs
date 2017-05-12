@@ -110,7 +110,7 @@ namespace Gecode {
 #endif
 
   Space::Space(void)
-    : sm(new SharedMemory), mm(sm), _wmp_afc(0U), var_id_counter(0) {
+    : sm(new SharedMemory), mm(sm), var_id_counter(0), _wmp_afc(0U){
 #ifdef GECODE_HAS_VAR_DISPOSE
     for (int i=0; i<AllVarConf::idx_d; i++)
       _vars_d[i] = NULL;
@@ -487,9 +487,9 @@ namespace Gecode {
     : sm(s.sm->copy(share)),
       mm(sm,s.mm,s.pc.p.n_sub*sizeof(Propagator**)),
       gpi(s.gpi),
+      var_id_counter(s.var_id_counter),
       d_fst(&Actor::sentinel),
-      _wmp_afc(s._wmp_afc),
-      var_id_counter(s.var_id_counter) {
+      _wmp_afc(s._wmp_afc) {
 #ifdef GECODE_HAS_VAR_DISPOSE
     for (int i=0; i<AllVarConf::idx_d; i++)
       _vars_d[i] = NULL;

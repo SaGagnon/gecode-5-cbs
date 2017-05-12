@@ -199,9 +199,9 @@ namespace Gecode { namespace Int { namespace Distinct {
     SolCounts(int domSize, int minDomVal);
     double& operator ()(int val);
   private:
-    std::vector<double> solcounts;
     int minVal;
     int maxVal;
+    std::vector<double> solcounts;
   };
 
   forceinline

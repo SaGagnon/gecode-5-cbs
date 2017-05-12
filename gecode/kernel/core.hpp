@@ -3476,7 +3476,7 @@ namespace Gecode {
   }
 
   forceinline bool
-  Propagator::cbs(const Space& home, CBS* densities) const {
+  Propagator::cbs(const Space&, CBS*) const {
     // Does nothing, so we return false. This behavior can be exploited for
     // testing if we have propagators that overloaded this method when
     // branching.

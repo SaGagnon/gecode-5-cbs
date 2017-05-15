@@ -227,7 +227,7 @@ namespace Gecode { namespace Int { namespace Distinct {
   };
 
   template<class View>
-  bool cbsdistinct(const Space& home, const ViewArray<View>& x, CBS* densities) {
+  bool cbsdistinct(Space& home, const ViewArray<View>& x, CBS* densities) {
     if (densities == NULL) return true;
     assert(!x.assigned());
     Region r(home);

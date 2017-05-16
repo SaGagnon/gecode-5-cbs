@@ -73,6 +73,10 @@ namespace Gecode { namespace Int { namespace Extensional {
     typedef Int::BoolView View;
   };
 
+  template<class View, class Val, class Degree, class StateIdx>
+  forceinline
+  LayeredGraph<View,Val,Degree,StateIdx>::StateCnt::StateCnt(void)
+    : i_paths(0), o_paths(0) {}
 
   /*
    * States
@@ -224,6 +228,121 @@ namespace Gecode { namespace Int { namespace Extensional {
     return _lst;
   }
 
+  /**
+   * We count the number of solutions in which is involved each value of each
+   * variables.
+   *
+   * For this, we pass in each layer and each supported value to accumulate
+   * the number incoming paths (forward pass) and the number of outgoing
+   * paths (backward pass).
+   *
+   * Suppose an edge going from s to s'. The number of paths in which this edge
+   * is involved is then the following: s.i_paths * s'.o_paths. With the number
+   * of possible paths for every edges, we can then compute solution densities
+   * for each edges (or (variable,value) pair).
+   *
+   * The algorithm is based on:
+   *        A. Zanarini and G. Pesant.
+   *        Solution Counting Algorithms for Constraint-Centered
+   *        Search Heurisitics (section 3)
+   */
+  template<class View, class Val, class Degree, class StateIdx>
+  forceinline bool
+  LayeredGraph<View,Val,Degree,StateIdx>::cbs(Space &home,
+                                              CBS* densities) const {
+    if (densities == NULL) return true;
+
+    if (layers[0].states == NULL)
+      const_cast<LayeredGraph<View,Val,Degree,StateIdx>*>(this)
+        ->alloc_state(home);
+
+    Region r(home);
+
+    StateCnt **statesCnt = r.alloc<StateCnt*>(n+1);
+    for (Layer *l=layers; l<&layers[n+1]; l++)
+      statesCnt[l-layers] = r.alloc<StateCnt>(l->n_states);
+
+    // Mark initial state as having one possible incoming path
+    statesCnt[0][0].i_paths = 1;
+
+    // Forward pass, compute incoming paths for each state of each layer
+    for (Layer *l=layers; l<&layers[n]; l++) {
+      for (Support *s=l->support; s<&l->support[l->size]; s++) {
+        for (Edge *e=s->edges; e<&s->edges[s->n_edges]; e++) {
+          StateCnt *in = &statesCnt[l-layers][e->i_state];
+          StateCnt *out = &statesCnt[l-layers+1][e->o_state];
+          out->i_paths += in->i_paths;
+        }
+      }
+    }
+
+    // Mark final states as having one possible outgoing path
+    Layer *ll = &layers[n]; // last layer
+    for (State *s=ll->states; s<&ll->states[ll->n_states]; s++)
+      if (s->o_deg == 1) statesCnt[n][s-ll->states].o_paths = 1;
+
+    // Backward pass, compute outgoing paths for each state of each layer
+    for (Layer *l=&layers[n]; (l--)-layers; ) {
+      for (Support *s=l->support; s<&l->support[l->size]; s++) {
+        for (Edge *e=s->edges; e<&s->edges[s->n_edges]; e++) {
+          StateCnt *in = &statesCnt[l-layers][e->i_state];
+          StateCnt *out = &statesCnt[l-layers+1][e->o_state];
+          in->o_paths += out->o_paths;
+        }
+      }
+    }
+
+    // Number of possible path in the layered graph
+    const int n_paths = statesCnt[0][0].o_paths;
+
+  //     DEBUG =================================================================
+  //    int max_n_states = 0;
+  //    for (Layer *l=layers; l<&layers[n+1]; l++)
+  //        if (l->n_states > max_n_states)
+  //          max_n_states = l->n_states;
+  //
+  //    std::stringstream lines[max_n_states+1];
+  //    for (Layer *l=layers; l<&layers[n]; l++) {
+  //      lines[0] << std::setw(11) << std::left << l->x.varimp()->var_idx;
+  //    }
+  //
+  //    for (Layer *l=layers; l<&layers[n+1]; l++) {
+  //      int line_idx = 1;
+  //      int n_paths_layer = 0;
+  //      for (State *s=l->states; s<&l->states[l->n_states]; s++) {
+  //        std::stringstream info;
+  //        StateCnt *statecnt = &statesCnt[l-layers][s-l->states];
+  //        n_paths_layer += statecnt->i_paths * statecnt->o_paths;
+  //        info << statecnt->i_paths << ":" << statecnt->o_paths;
+  //        lines[line_idx] << std::setw(11) << std::left << info.str();
+  //        line_idx++;
+  //      }
+  //      assert(n_paths_layer == n_paths);
+  //      for (int i=line_idx; i<max_n_states; i++)
+  //        lines[i] << std::setw(11) << std::left << ' ';
+  //    }
+  //    for (int i=0; i<max_n_states; i++) std::cout << lines[i].str() << std::endl;
+  //    std::cout << "---------------------------------------------" << std::endl;
+  //     DEBUG =================================================================
+
+    // Densities calculation
+    for (Layer *l=layers; l<&layers[n]; l++) {
+      if (l->x.id() == 0 || l->x.assigned()) continue;
+      for (Support *s=l->support; s<&l->support[l->size]; s++) {
+        int count = 0;
+        for (Edge *e=s->edges; e<&s->edges[s->n_edges]; e++) {
+          StateCnt *in = &statesCnt[l-layers][e->i_state];
+          StateCnt *out = &statesCnt[l-layers+1][e->o_state];
+          count += in->i_paths * out->o_paths;
+        }
+        double dens = (double)count / n_paths;
+        densities->set(l->x.id(), l->x.baseval(s->val), dens);
+  //        std::cout << dens << std::endl;
+      }
+    }
+
+    return true;
+  }
 
 
   /*
@@ -442,24 +561,7 @@ namespace Gecode { namespace Int { namespace Extensional {
   LayeredGraph<View,Val,Degree,StateIdx>::advise(Space& home,
                                                  Advisor& _a, const Delta& d) {
     // Check whether state information has already been created
-    if (layers[0].states == NULL) {
-      State* states = home.alloc<State>(n_states);
-      for (unsigned int i=n_states; i--; )
-        states[i].init();
-      layers[n].states = states;
-      states += layers[n].n_states;
-      for (int i=n; i--; ) {
-        layers[i].states = states;
-        states += layers[i].n_states;
-        for (ValSize j=layers[i].size; j--; ) {
-          Support& s = layers[i].support[j];
-          for (Degree deg=s.n_edges; deg--; ) {
-            i_state(i,s.edges[deg]).o_deg++;
-            o_state(i,s.edges[deg]).i_deg++;
-          }
-        }
-      }
-    }
+    if (layers[0].states == NULL) alloc_state(home);
 
     Index& a = static_cast<Index&>(_a);
     const int i = a.i;
@@ -713,7 +815,7 @@ namespace Gecode { namespace Int { namespace Extensional {
       n(p.n), layers(home.alloc<Layer>(n+1)),
       max_states(p.max_states), n_states(p.n_states), n_edges(p.n_edges) {
     c.update(home,share,p.c);
-    // Do not allocate states, postpone to advise!
+    // Do not allocate states, postpone to advise or cbs!
     layers[n].n_states = p.layers[n].n_states;
     layers[n].states = NULL;
     // Allocate memory for edges
@@ -850,6 +952,36 @@ namespace Gecode { namespace Int { namespace Extensional {
     audit();
 
     return new (home) LayeredGraph<View,Val,Degree,StateIdx>(home,share,*this);
+  }
+
+  template<class View, class Val, class Degree, class StateIdx>
+  void
+  LayeredGraph<View,Val,Degree,StateIdx>::alloc_state(Space& home) {
+    assert(layers[0].states == NULL);
+    // TODO: HACK.
+
+    State* states = home.alloc<State>(n_states);
+    for (unsigned int i=n_states; i--; )
+      states[i].init();
+    layers[n].states = states;
+    states += layers[n].n_states;
+    // Mark final states as reachable
+    for (int i=layers[n].n_states; i--; ) {
+      layers[n].states[i].o_deg = 1;
+    }
+    for (int i=n; i--; ) {
+      layers[i].states = states;
+      states += layers[i].n_states;
+      for (ValSize j=layers[i].size; j--; ) {
+        Support& s = layers[i].support[j];
+        for (Degree d=s.n_edges; d--; ) {
+          i_state(i,s.edges[d]).o_deg++;
+          o_state(i,s.edges[d]).i_deg++;
+        }
+      }
+    }
+    // Mark initial state as being reachable
+    layers[0].states[0].i_deg = 1;
   }
 
   /// Select small types for the layered graph propagator

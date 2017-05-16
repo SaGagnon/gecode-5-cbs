@@ -68,6 +68,14 @@ namespace Gecode { namespace Int { namespace Extensional {
   template<class View, class Val, class Degree, class StateIdx>
   class LayeredGraph : public Propagator {
   protected:
+    /// Used for accumulating number of incoming and outgoing paths for cbs
+    class StateCnt {
+    public:
+      int i_paths; ///< The number of incoming paths for a state
+      int o_paths; ///< The number of outgoing paths for a state
+      /// Initialize with zeroes
+      StateCnt(void);
+    };
     /// States are described by number of incoming and outgoing edges
     class State {
     public:
@@ -192,6 +200,8 @@ namespace Gecode { namespace Int { namespace Extensional {
     LayeredGraph(Space& home, bool share,
                  LayeredGraph<View,Val,Degree,StateIdx>& p);
   public:
+    /// Counting base search densities computation for branching
+    virtual bool cbs(Space& home, CBS* densities) const;
     /// Constructor for posting
     template<class Var>
     LayeredGraph(Home home,
@@ -212,6 +222,9 @@ namespace Gecode { namespace Int { namespace Extensional {
     template<class Var>
     static ExecStatus post(Home home,
                            const VarArgArray<Var>& x, const DFA& dfa);
+  private:
+    // Check wheter state information has already been created
+    void alloc_state(Space& home);
   };
 
   /// Select small types for the layered graph propagator

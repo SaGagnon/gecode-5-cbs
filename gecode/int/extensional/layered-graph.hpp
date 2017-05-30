@@ -294,6 +294,7 @@ namespace Gecode { namespace Int { namespace Extensional {
 
     // Number of possible path in the layered graph
     const int n_paths = statesCnt[0][0].o_paths;
+    densities->setSlnCnt(n_paths);
 
   //     DEBUG =================================================================
   //    int max_n_states = 0;

@@ -1015,6 +1015,7 @@ namespace Gecode {
   class CBS {
   public:
     virtual void set(unsigned int var_id, int val, double density) = 0;
+    virtual void setSlnCnt(double count) = 0;
   };
 
   /**

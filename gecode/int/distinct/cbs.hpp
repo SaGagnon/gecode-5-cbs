@@ -244,6 +244,9 @@ namespace Gecode { namespace Int { namespace Distinct {
       ub.minc *= mincFactors.get(viewArray[i].size());
       ub.liangBai *= liangBaiFactors.get(i,viewArray[i].size());
     }
+
+    densities->setSlnCnt(std::min(ub.minc, ::sqrt(ub.liangBai)));
+
     // Span from the minimum to the maximum value of the union of all
     // variable domains
     int minVal = viewArray[0].min(); int maxVal = viewArray[0].max();

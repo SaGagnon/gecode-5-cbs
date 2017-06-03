@@ -252,7 +252,9 @@ namespace Gecode { namespace Int { namespace Extensional {
                                               CBS* densities) const {
     if (densities == NULL) {
       int d = 0;
-      for (int i=0; i<n; i++) d += layers[i].size;
+      for (int i=0; i<n; i++)
+        if (!layers[i].x.assigned())
+          d += layers[i].x.size();
       return d;
     }
 

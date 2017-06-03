@@ -73,7 +73,7 @@ namespace Gecode { namespace Int { namespace Distinct {
   }
 
   template<class View>
-  bool
+  int
   Bnd<View>::cbs(Space& home, CBS* densities) const {
     return cbsdistinct(home,x,densities);
   }

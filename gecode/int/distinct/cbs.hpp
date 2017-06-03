@@ -227,8 +227,13 @@ namespace Gecode { namespace Int { namespace Distinct {
   };
 
   template<class View>
-  bool cbsdistinct(Space& home, const ViewArray<View>& x, CBS* densities) {
-    if (densities == NULL) return true;
+  int cbsdistinct(Space& home, const ViewArray<View>& x, CBS* densities) {
+    if (densities == NULL) {
+      int d = 0;
+      for (int i=0; i<x.size(); i++) if (!x[i].assigned()) d += x[i].size();
+      return d;
+    }
+
     assert(!x.assigned());
     Region r(home);
     ViewArray<View> viewArray(r,x);
@@ -289,7 +294,8 @@ namespace Gecode { namespace Int { namespace Distinct {
         densities->set(viewArray[i].id(),viewArray[i].baseval(val.val()),d);
       }
     }
-    return true;
+
+    return 0;
   }
 
 }}}

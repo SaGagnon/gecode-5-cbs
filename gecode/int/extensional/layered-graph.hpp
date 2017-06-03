@@ -247,10 +247,14 @@ namespace Gecode { namespace Int { namespace Extensional {
    *        Search Heurisitics (section 3)
    */
   template<class View, class Val, class Degree, class StateIdx>
-  forceinline bool
+  forceinline int
   LayeredGraph<View,Val,Degree,StateIdx>::cbs(Space &home,
                                               CBS* densities) const {
-    if (densities == NULL) return true;
+    if (densities == NULL) {
+      int d = 0;
+      for (int i=0; i<n; i++) d += layers[i].size;
+      return d;
+    }
 
     if (layers[0].states == NULL)
       const_cast<LayeredGraph<View,Val,Degree,StateIdx>*>(this)
@@ -342,7 +346,7 @@ namespace Gecode { namespace Int { namespace Extensional {
       }
     }
 
-    return true;
+    return 0;
   }
 
 

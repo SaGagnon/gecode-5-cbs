@@ -201,7 +201,7 @@ namespace Gecode { namespace Int { namespace Extensional {
                  LayeredGraph<View,Val,Degree,StateIdx>& p);
   public:
     /// Counting base search densities computation for branching
-    virtual bool cbs(Space& home, CBS* densities) const;
+    virtual int cbs(Space& home, CBS* densities) const;
     /// Constructor for posting
     template<class Var>
     LayeredGraph(Home home,

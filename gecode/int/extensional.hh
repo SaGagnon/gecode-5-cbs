@@ -71,8 +71,8 @@ namespace Gecode { namespace Int { namespace Extensional {
     /// Used for accumulating number of incoming and outgoing paths for cbs
     class StateCnt {
     public:
-      int i_paths; ///< The number of incoming paths for a state
-      int o_paths; ///< The number of outgoing paths for a state
+      double i_paths; ///< The number of incoming paths for a state
+      double o_paths; ///< The number of outgoing paths for a state
       /// Initialize with zeroes
       StateCnt(void);
     };

@@ -299,7 +299,7 @@ namespace Gecode { namespace Int { namespace Extensional {
     }
 
     // Number of possible path in the layered graph
-    const int n_paths = statesCnt[0][0].o_paths;
+    const double n_paths = statesCnt[0][0].o_paths;
     densities->setSlnCnt(n_paths);
 
   //     DEBUG =================================================================
@@ -336,13 +336,14 @@ namespace Gecode { namespace Int { namespace Extensional {
     for (Layer *l=layers; l<&layers[n]; l++) {
       if (l->x.id() == 0 || l->x.assigned()) continue;
       for (Support *s=l->support; s<&l->support[l->size]; s++) {
-        int count = 0;
+        double count = 0;
         for (Edge *e=s->edges; e<&s->edges[s->n_edges]; e++) {
           StateCnt *in = &statesCnt[l-layers][e->i_state];
           StateCnt *out = &statesCnt[l-layers+1][e->o_state];
           count += in->i_paths * out->o_paths;
         }
         double dens = (double)count / n_paths;
+        assert(n_paths != 0);
         densities->set(l->x.id(), l->x.baseval(s->val), dens);
   //        std::cout << dens << std::endl;
       }

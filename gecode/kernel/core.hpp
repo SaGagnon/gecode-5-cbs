@@ -1012,10 +1012,10 @@ namespace Gecode {
   /**
    * \brief Interface class to set densities for each variable and value.
    */
-  class CBS {
+  class SolnDistribution {
   public:
-    virtual void set(unsigned int var_id, int val, double density) = 0;
-    virtual void setSlnCnt(double count) = 0;
+    virtual void setMarginalDistribution(unsigned int var_id, int val, double density) = 0;
+    virtual void setSupportSize(double count) = 0;
   };
 
   /**
@@ -1143,7 +1143,7 @@ namespace Gecode {
     /// Return the accumlated failure count
     double afc(const Space& home) const;
     /// Set densities for each variables and values
-    virtual int cbs(Space& home, CBS* densities) const;
+    virtual int cbs(Space& home, SolnDistribution* densities) const;
     //@}
     /// \name Id and group support
     //@{
@@ -3477,7 +3477,7 @@ namespace Gecode {
   }
 
   forceinline int
-  Propagator::cbs(Space&, CBS*) const {
+  Propagator::cbs(Space&, SolnDistribution*) const {
     return 0;
   }
 

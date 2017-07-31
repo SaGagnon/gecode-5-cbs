@@ -1142,8 +1142,8 @@ namespace Gecode {
     //@{
     /// Return the accumlated failure count
     double afc(const Space& home) const;
-    /// Set densities for each variables and values
-    virtual int cbs(Space& home, SolnDistribution* densities) const;
+    /// Compute solution distribution for the given propagator
+    virtual int slndist(Space& home, SolnDistribution* dist) const;
     //@}
     /// \name Id and group support
     //@{
@@ -3477,7 +3477,7 @@ namespace Gecode {
   }
 
   forceinline int
-  Propagator::cbs(Space&, SolnDistribution*) const {
+  Propagator::slndist(Space&, SolnDistribution*) const {
     return 0;
   }
 

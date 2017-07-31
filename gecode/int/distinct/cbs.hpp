@@ -228,8 +228,8 @@ namespace Gecode { namespace Int { namespace Distinct {
 
   template<class View>
   int cbsdistinct(Space& home, const ViewArray<View>& x,
-                  SolnDistribution* densities) {
-    if (densities == NULL) {
+                  SolnDistribution* dist) {
+    if (dist == NULL) {
       int d = 0;
       for (int i=0; i<x.size(); i++) if (!x[i].assigned()) d += x[i].size();
       return d;
@@ -251,7 +251,7 @@ namespace Gecode { namespace Int { namespace Distinct {
       ub.liangBai *= liangBaiFactors.get(i,viewArray[i].size());
     }
 
-    densities->setSupportSize(std::min(ub.minc, ::sqrt(ub.liangBai)));
+    dist->setSupportSize(std::min(ub.minc, ::sqrt(ub.liangBai)));
 
     // Span from the minimum to the maximum value of the union of all
     // variable domains
@@ -292,7 +292,7 @@ namespace Gecode { namespace Int { namespace Distinct {
       // Normalization
       for (ViewValues<View> val(viewArray[i]); val(); ++val) {
         double d = solcounts(val.val()) / normalization;
-        densities->setMarginalDistribution(
+        dist->setMarginalDistribution(
           viewArray[i].id(),viewArray[i].baseval(val.val()),d);
       }
     }

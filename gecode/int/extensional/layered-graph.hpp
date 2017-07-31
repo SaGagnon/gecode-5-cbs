@@ -248,9 +248,9 @@ namespace Gecode { namespace Int { namespace Extensional {
    */
   template<class View, class Val, class Degree, class StateIdx>
   forceinline int
-  LayeredGraph<View,Val,Degree,StateIdx>::cbs(Space &home,
-                                              SolnDistribution* densities) const {
-    if (densities == NULL) {
+  LayeredGraph<View,Val,Degree,StateIdx>::slndist(Space &home,
+                                              SolnDistribution* dist) const {
+    if (dist == NULL) {
       int d = 0;
       for (int i=0; i<n; i++)
         if (!layers[i].x.assigned())
@@ -300,7 +300,7 @@ namespace Gecode { namespace Int { namespace Extensional {
 
     // Number of possible path in the layered graph
     const double n_paths = statesCnt[0][0].o_paths;
-    densities->setSupportSize(n_paths);
+    dist->setSupportSize(n_paths);
 
   //     DEBUG =================================================================
   //    int max_n_states = 0;
@@ -344,7 +344,7 @@ namespace Gecode { namespace Int { namespace Extensional {
         }
         double dens = (double)count / n_paths;
         assert(n_paths != 0);
-        densities->setMarginalDistribution(l->x.id(), l->x.baseval(s->val), dens);
+        dist->setMarginalDistribution(l->x.id(), l->x.baseval(s->val), dens);
   //        std::cout << dens << std::endl;
       }
     }

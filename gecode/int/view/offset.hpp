@@ -76,6 +76,10 @@ namespace Gecode { namespace Int {
   OffsetView::val(void) const {
     return x.val()+c;
   }
+  forceinline int
+  OffsetView::baseval(int val) const {
+    return val-c;
+  }
 
   forceinline unsigned int
   OffsetView::width(void) const {

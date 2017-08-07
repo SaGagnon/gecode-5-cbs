@@ -64,7 +64,10 @@ namespace Gecode { namespace Int {
   MinusView::val(void) const {
     return -x.val();
   }
-
+  forceinline int
+  MinusView::baseval(int val) const {
+    return -val;
+  }
   forceinline unsigned int
   MinusView::width(void) const {
     return x.width();

@@ -327,6 +327,8 @@ namespace Gecode {
     unsigned int free_and_bits;
     /// Maximal propagation condition
     static const Gecode::PropCond pc_max = VIC::pc_max;
+    /// Unique id for variable
+    const unsigned int var_id;
 
     union {
       /**
@@ -401,6 +403,8 @@ namespace Gecode {
     VarImp(Space& home);
     /// Creation of static instances
     VarImp(void);
+    /// Return variable id
+    unsigned int id(void) const;
 
     /// \name Dependencies
     //@{
@@ -1006,6 +1010,15 @@ namespace Gecode {
   };
 
   /**
+   * \brief Interface class to set densities for each variable and value.
+   */
+  class SolnDistribution {
+  public:
+    virtual void setMarginalDistribution(unsigned int var_id, int val, double density) = 0;
+    virtual void setSupportSize(double count) = 0;
+  };
+
+  /**
    * \brief Base-class for propagators
    * \ingroup TaskActor
    */
@@ -1129,6 +1142,8 @@ namespace Gecode {
     //@{
     /// Return the accumlated failure count
     double afc(const Space& home) const;
+    /// Compute solution distribution for the given propagator
+    virtual int slndist(Space& home, SolnDistribution* dist) const;
     //@}
     /// \name Id and group support
     //@{
@@ -1693,6 +1708,8 @@ namespace Gecode {
     MemoryManager mm;
     /// Global AFC information
     GPI gpi;
+    /// Global counter for variable id
+    unsigned int var_id_counter;
     /// Doubly linked list of all propagators
     ActorLink pl;
     /// Doubly linked list of all branchers
@@ -3459,6 +3476,11 @@ namespace Gecode {
     return const_cast<Space&>(home).gpi.afc(const_cast<Propagator&>(*this).gpi());
   }
 
+  forceinline int
+  Propagator::slndist(Space&, SolnDistribution*) const {
+    return 0;
+  }
+
   forceinline unsigned int
   Propagator::id(void) const {
     return const_cast<Propagator&>(*this).gpi().pid;
@@ -4010,7 +4032,8 @@ namespace Gecode {
 
   template<class VIC>
   forceinline
-  VarImp<VIC>::VarImp(Space&) {
+  VarImp<VIC>::VarImp(Space& home)
+    : var_id(++home.var_id_counter){
     b.base = NULL; entries = 0;
     for (PropCond pc=1; pc<pc_max+2; pc++)
       idx(pc) = 0;
@@ -4019,11 +4042,18 @@ namespace Gecode {
 
   template<class VIC>
   forceinline
-  VarImp<VIC>::VarImp(void) {
+  VarImp<VIC>::VarImp(void)
+    : var_id(0) {
     b.base = NULL; entries = 0;
     for (PropCond pc=1; pc<pc_max+2; pc++)
       idx(pc) = 0;
     free_and_bits = 0;
+  }
+
+  template<class VIC>
+  forceinline unsigned int
+  VarImp<VIC>::id(void) const {
+    return var_id;
   }
 
   template<class VIC>
@@ -4110,7 +4140,8 @@ namespace Gecode {
 
   template<class VIC>
   forceinline
-  VarImp<VIC>::VarImp(Space& home, bool, VarImp<VIC>& x) {
+  VarImp<VIC>::VarImp(Space& home, bool, VarImp<VIC>& x)
+    : var_id(x.var_id) {
     VarImpBase** reg;
     free_and_bits = x.free_and_bits & ((1 << free_bits) - 1);
     if (x.b.base == NULL) {

@@ -87,6 +87,12 @@ namespace Gecode { namespace Int {
   }
 
   template<class Val, class UnsVal>
+  forceinline Val
+  ScaleView<Val,UnsVal>::baseval(Val val) const {
+    return val / a;
+  }
+
+  template<class Val, class UnsVal>
   forceinline UnsVal
   ScaleView<Val,UnsVal>::size(void) const {
     return static_cast<UnsVal>(x.size());

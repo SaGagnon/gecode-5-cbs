@@ -75,6 +75,11 @@ namespace Gecode { namespace Int {
   CachedView<View>::val(void) const {
     return x.val();
   }
+  template<class View>
+  forceinline int
+  CachedView<View>::baseval(int val) const {
+    return val;
+  }
 
   template<class View>
   forceinline unsigned int

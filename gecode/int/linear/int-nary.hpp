@@ -394,6 +394,17 @@ namespace Gecode { namespace Int { namespace Linear {
   }
 
   template<class Val, class P, class N>
+  int
+  Eq<Val,P,N>::slndist(Space& home, SolnDistribution* dist) const {
+    if (dist == NULL) {
+      int d = 0;
+      for (int i=0; i<x.size(); i++) if (!x[i].assigned()) d += x[i].size();
+      return d;
+    }
+
+  };
+
+  template<class Val, class P, class N>
   ExecStatus
   Eq<Val,P,N>::propagate(Space& home, const ModEventDelta& med) {
     return prop_bnd<Val,P,N>(home,med,*this,x,y,c);

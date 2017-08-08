@@ -46,7 +46,7 @@ endif()
 macro (GECODE_EXAMPLE NAME)
 	add_executable(${NAME}${EXECUTABLE_EXTENSION}
 	               ${NAME}.cpp)
-	target_link_libraries(${NAME}${EXECUTABLE_EXTENSION} gecodeminimodel gecodedriver)
+	target_link_libraries(${NAME}${EXECUTABLE_EXTENSION} gecodeminimodel gecodedriver gecodegist)
 	set_property(TARGET ${NAME}${EXECUTABLE_EXTENSION}         PROPERTY FOLDER "Examples")
 endmacro ()
 

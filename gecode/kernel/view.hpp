@@ -58,6 +58,8 @@ namespace Gecode {
     static bool varderived(void);
     /// Return dummy variable implementation of view
     VarImpType* varimp(void) const;
+    /// Return dummy id
+    unsigned int id(void) const;
     //@}
 
     /// \name Domain tests
@@ -372,6 +374,11 @@ namespace Gecode {
   forceinline typename View::VarImpType*
   ConstView<View>::varimp(void) const {
     return NULL;
+  }
+  template<class View>
+  forceinline unsigned int
+  ConstView<View>::id(void) const {
+    return 0;
   }
   template<class View>
   forceinline bool

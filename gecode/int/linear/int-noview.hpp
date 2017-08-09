@@ -61,6 +61,8 @@ namespace Gecode {
       int med(void) const { return 0; }
       /// Return assigned value (only if assigned)
       int val(void) const { return 0; }
+      /// Return reverse transformation of value according to view
+      int baseval(int val) const { return 0; }
 
       /// Return size (cardinality) of domain
       unsigned int size(void) const { return 1; }

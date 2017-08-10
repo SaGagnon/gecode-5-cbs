@@ -405,14 +405,14 @@ namespace Gecode { namespace Int { namespace Linear {
   template<class View>
   forceinline double
   boundsMean(const View& x, bool P) {
-    double max = P?x.max():-x.max();
-    double min = P?x.min():-x.min();
+    double max = P?x.max():-x.min();
+    double min = P?x.min():-x.max();
     return (min + max)/2;
   }
 
   template<>
   forceinline double
-  boundsMean(const NoView& x, bool P) {
+  boundsMean(const NoView&, bool) {
     return 0;
   }
 
@@ -427,7 +427,7 @@ namespace Gecode { namespace Int { namespace Linear {
 
   template<>
   forceinline double
-  domainVariance(const NoView& x, double mean) {
+  domainVariance(const NoView&, double) {
     return 0;
   }
 
@@ -439,33 +439,43 @@ namespace Gecode { namespace Int { namespace Linear {
     variance = (std::pow(ub-lb+1,2)-1)/12;
 
     for (int i=0; i<x.size(); i++) {
-      double _mean = boundsMean(x[i], true);
-      mean -= _mean;
-      variance += domainVariance(x[i], _mean);
+      if (x[i].assigned()) {
+        mean -= x[i].val();
+      } else {
+        double _mean = boundsMean(x[i], true);
+        mean -= _mean;
+        variance += domainVariance(x[i], _mean);
+      }
     }
 
     for (int i=0; i<y.size(); i++) {
-      double _mean = boundsMean(y[i], false);
-      mean -= _mean;
-      variance += domainVariance(y[i], _mean);
+      if (x[i].assigned()) {
+        mean += x[i].val();
+      } else {
+        double _mean = boundsMean(y[i], false);
+        mean -= _mean;
+        variance += domainVariance(y[i], _mean);
+      }
     }
   }
 
   template<class View>
   forceinline void
-  approx_dens_for_array(Space& home, const ViewArray<View>& a,
+  approx_dens_for_array(Space& home, const ViewArray<View>& a, bool P,
                         SolnDistribution* dist,
                         double mean, double variance) {
-    // For every value in the domain of ViewArray a
+    // For every variable in the domain of ViewArray a
     for (int i = 0; i < a.size(); i++) {
-      double _mean = boundsMean(a[i], true);
+      if (a[i].assigned()) continue;
+
+      double _mean = boundsMean(a[i], P);
       double _variance = domainVariance(a[i], _mean);
 
-      double mean_i = mean - _mean; // Pas besoin de prendre en compte les coefficients...
+      double mean_i = mean + _mean; // Pas besoin de prendre en compte les coefficients...
       double variance_i = variance - _variance;
 
       Region r(home);
-      double *approx_dens_a = r.alloc<double>(1);
+      double *approx_dens_a = r.alloc<double>((int)a[i].size());
 
       // Probability mass for each value in a[i]
       double approx_sum = 0;
@@ -476,7 +486,7 @@ namespace Gecode { namespace Int { namespace Linear {
             approx_dens_a[j] = 1;
           else
             approx_dens_a[j] = exp(
-              -std::pow(val.val() - mean_i, 2) / 2 * variance_i);
+              -std::pow(val.val() - mean_i, 2) / (2 * variance_i));
           approx_sum += approx_dens_a[j];
           j++;
         }
@@ -498,21 +508,25 @@ namespace Gecode { namespace Int { namespace Linear {
   }
 
   template<> forceinline void
-  approx_dens_for_array(Space&, const ViewArray<NoView>&, SolnDistribution*,
-                        double, double) {}
+  approx_dens_for_array(Space&, const ViewArray<NoView>&, bool,
+                        SolnDistribution*, double, double) {}
 
   template<class Val, class P, class N>
   int
   Eq<Val,P,N>::slndist(Space& home, SolnDistribution* dist) const {
-    if (dist == NULL)
-      return nonAssignedSize(x,y);
+    if (dist == NULL) {
+      int tmp = nonAssignedSize(x, y);
+      return tmp;
+    }
 
     // Mean and variance of the distribution
     double mean, variance;
     MV_dist(c, c, x, y, mean, variance);
 
-    approx_dens_for_array(home,x,dist,mean,variance);
-    approx_dens_for_array(home,y,dist,mean,variance);
+    approx_dens_for_array(home,x,true,dist,mean,variance);
+    approx_dens_for_array(home,y,false,dist,mean,variance);
+
+    return 0;
   };
 
   template<class Val, class P, class N>

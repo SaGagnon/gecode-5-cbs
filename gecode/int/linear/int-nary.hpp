@@ -514,9 +514,8 @@ namespace Gecode { namespace Int { namespace Linear {
   template<class Val, class P, class N>
   int
   Eq<Val,P,N>::slndist(Space& home, SolnDistribution* dist) const {
-    if (dist == NULL) {
+    if (dist == NULL)
       return nonAssignedSize(x, y);
-    }
 
     // Mean and variance of the distribution
     double mean, variance;

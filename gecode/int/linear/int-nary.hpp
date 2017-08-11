@@ -449,8 +449,8 @@ namespace Gecode { namespace Int { namespace Linear {
     }
 
     for (int i=0; i<y.size(); i++) {
-      if (x[i].assigned()) {
-        mean += x[i].val();
+      if (y[i].assigned()) {
+        mean += y[i].val();
       } else {
         double _mean = boundsMean(y[i], false);
         mean -= _mean;
@@ -515,8 +515,7 @@ namespace Gecode { namespace Int { namespace Linear {
   int
   Eq<Val,P,N>::slndist(Space& home, SolnDistribution* dist) const {
     if (dist == NULL) {
-      int tmp = nonAssignedSize(x, y);
-      return tmp;
+      return nonAssignedSize(x, y);
     }
 
     // Mean and variance of the distribution

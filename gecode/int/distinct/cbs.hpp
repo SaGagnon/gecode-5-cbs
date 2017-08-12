@@ -167,28 +167,68 @@ namespace Gecode { namespace Int { namespace Distinct {
   public:
     template<class View>
     ValToVar(const ViewArray<View>& x, int minDomVal, int maxDomVal);
-    std::set<int>& operator ()(int val);
+    ~ValToVar();
+
+    int getNbVarForVal(int val) const;
+    int get(int val, int ith_var) const;
+
   private:
-    std::vector<std::set<int> > vtv;
+    int nbVal() const;
+  private:
+    int *nbVarForVal; // Number of variable for each value
+    int *valVar; // Value to variables
+
     int minVal;
     int maxVal;
+    int nb_var;
   };
 
   template<class View>
   ValToVar::ValToVar(const ViewArray<View>& x, int minDomVal, int maxDomVal)
-    : minVal(minDomVal), maxVal(maxDomVal) {
-    vtv = std::vector<std::set<int> >((unsigned long)(maxVal-minVal+1));
+    : minVal(minDomVal), maxVal(maxDomVal), nb_var(x.size()) {
+
+    nbVarForVal = heap.alloc<int>(nbVal());;
+    for (int i=0; i<nbVal(); i++) nbVarForVal[i] = 0;
+
+    valVar = heap.alloc<int>(nbVal() * nb_var);
+
     for (int var=0; var<x.size(); var++) {
       for (ViewValues<View> val(x[var]); val(); ++val) {
-        vtv[val.val()-minVal].insert(var);
+        // Current value
+        int v = val.val();
+        // Number of variables for current value
+        int *nbVar = &nbVarForVal[v-minVal];
+
+        int row=(v-minVal); int width=nb_var; int col=*nbVar;
+        valVar[row*width + col] = var;
+
+        (*nbVar)++;
       }
     }
   }
 
   forceinline
-  std::set<int>& ValToVar::operator()(int val) {
-    assert(minVal <= val && val <= maxVal);
-    return vtv[val-minVal];
+  ValToVar::~ValToVar() {
+    heap.free<int>(nbVarForVal, nbVal());
+    heap.free<int>(valVar, nb_var*nbVal());
+  }
+
+  forceinline
+  int ValToVar::getNbVarForVal(int val) const {
+    return nbVarForVal[val-minVal];
+  }
+
+  forceinline
+  int ValToVar::get(int val, int ith_var) const {
+    assert(ith_var < getNbVarForVal(val));
+    assert(val - minVal >= 0 && val - minVal <= maxVal);
+    int row=(val-minVal); int width=nb_var; int col=ith_var;
+    return valVar[row*width + col];
+  }
+
+  forceinline
+  int ValToVar::nbVal() const {
+    return maxVal - minVal + 1;
   }
 
   /**
@@ -275,13 +315,12 @@ namespace Gecode { namespace Int { namespace Distinct {
       for (ViewValues<View> val(viewArray[i]); val(); ++val) {
         UB localUB = varUB;
         // Upper bound for every variable affected by the assignation
-        std::set<int>::iterator it;
-        std::set<int>::iterator end = valToVar(val.val()).end();
-        for (it = valToVar(val.val()).begin(); it != end; ++it) {
-          if (*it != i) {
-            upperBoundUpdate(localUB,i,viewArray[*it].size(),
-                             viewArray[*it].size()-1);
-          }
+        int nbVarAffectedByVal = valToVar.getNbVarForVal(val.val());
+        for (int j=0; j<nbVarAffectedByVal; j++) {
+          int affectedVar = valToVar.get(val.val(), j);
+          if (affectedVar != i)
+            upperBoundUpdate(localUB,i,viewArray[affectedVar].size(),
+                             viewArray[affectedVar].size()-1);
         }
 
         double lowerUB = std::min(localUB.minc,::sqrt(localUB.liangBai));

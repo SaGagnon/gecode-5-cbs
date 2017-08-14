@@ -775,6 +775,7 @@ namespace Gecode { namespace Int { namespace Linear {
 
 }}}
 
+#include <gecode/int/linear/cbs.hpp>
 #include <gecode/int/linear/int-nary.hpp>
 #include <gecode/int/linear/int-dom.hpp>
 

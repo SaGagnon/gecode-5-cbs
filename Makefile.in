@@ -368,6 +368,7 @@ INTHDR0 = \
 	linear/int-noview.hpp linear/int-bin.hpp linear/int-ter.hpp \
 	linear/int-nary.hpp linear/int-dom.hpp \
 	linear/bool-int.hpp linear/bool-view.hpp linear/bool-scale.hpp \
+	linear/cbs.hpp \
 	extensional/dfa.hpp extensional/layered-graph.hpp \
 	extensional/tuple-set.hpp extensional/base.hpp \
 	extensional/basic.hpp extensional/incremental.hpp \

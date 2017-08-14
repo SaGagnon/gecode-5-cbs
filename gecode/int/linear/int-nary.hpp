@@ -404,15 +404,28 @@ namespace Gecode { namespace Int { namespace Linear {
 
   template<class View>
   forceinline double
-  boundsMean(const View& x, bool P) {
-    double max = P?x.max():-x.min();
-    double min = P?x.min():-x.max();
-    return (min + max)/2;
+  boundsMean(const View& x) {
+    return (x.min() + x.max())/2;
   }
 
   template<>
   forceinline double
-  boundsMean(const NoView&, bool) {
+  boundsMean(const NoView&) {
+    return 0;
+  }
+
+  template<class View>
+  forceinline double
+  domainMean(const View& x) {
+    double mean = 0;
+    for (ViewValues<View> val(x); val(); ++val)
+      mean += val.val();
+    return mean / x.size();
+  }
+
+  template<>
+  forceinline double
+  domainMean(const NoView&) {
     return 0;
   }
 
@@ -442,7 +455,7 @@ namespace Gecode { namespace Int { namespace Linear {
       if (x[i].assigned()) {
         mean -= x[i].val();
       } else {
-        double _mean = boundsMean(x[i], true);
+        double _mean = domainMean(x[i]);
         mean -= _mean;
         variance += domainVariance(x[i], _mean);
       }
@@ -452,8 +465,8 @@ namespace Gecode { namespace Int { namespace Linear {
       if (y[i].assigned()) {
         mean += y[i].val();
       } else {
-        double _mean = boundsMean(y[i], false);
-        mean -= _mean;
+        double _mean = domainMean(y[i]);
+        mean += _mean;
         variance += domainVariance(y[i], _mean);
       }
     }
@@ -468,25 +481,27 @@ namespace Gecode { namespace Int { namespace Linear {
     for (int i = 0; i < a.size(); i++) {
       if (a[i].assigned()) continue;
 
-      double _mean = boundsMean(a[i], P);
-      double _variance = domainVariance(a[i], _mean);
-
-      double mean_i = mean + _mean; // Pas besoin de prendre en compte les coefficients...
-      double variance_i = variance - _variance;
-
-      Region r(home);
-      double *approx_dens_a = r.alloc<double>((int)a[i].size());
+      double mean_i, variance_i;
+      {
+        double _mean = domainMean(a[i]);
+        double _variance = domainVariance(a[i], _mean);
+        mean_i = P? mean+_mean : mean-_mean;
+        variance_i = variance - _variance;
+      }
 
       // Probability mass for each value in a[i]
+      Region r(home);
+      double *approx_dens_a = r.alloc<double>((int)a[i].size());
       double approx_sum = 0;
       {
         int j = 0;
         for (ViewValues<View> val(a[i]); val(); ++val) {
+          int v = P? val.val() : -val.val();
           if (variance_i == 0)
             approx_dens_a[j] = 1;
           else
             approx_dens_a[j] = exp(
-              -std::pow(val.val() - mean_i, 2) / (2 * variance_i));
+              -std::pow(v - mean_i, 2) / (2 * variance_i));
           approx_sum += approx_dens_a[j];
           j++;
         }

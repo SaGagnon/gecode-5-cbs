@@ -752,6 +752,19 @@ namespace Gecode { namespace Int { namespace Linear {
   }
 
   template<class Val, class P, class N>
+  int
+  Lq<Val,P,N>::slndist(Space& home, SolnDistribution* dist) const {
+    int lb=0;
+    for (int i=0; i<x.size(); i++)
+      lb += x[i].min();
+    for (int i=0; i<y.size(); i++)
+      lb -= y[i].max();
+
+    lb /= x.size() + y.size();
+    return cbslinear(home,dist,x,y,lb,c);
+  };
+
+  template<class Val, class P, class N>
   ExecStatus
   Lq<Val,P,N>::propagate(Space& home, const ModEventDelta& med) {
     // Eliminate singletons

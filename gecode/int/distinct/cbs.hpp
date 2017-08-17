@@ -37,42 +37,14 @@ namespace Gecode { namespace Int { namespace Distinct {
    * used to compute the Minc and Brégman upper bound for the permanent in
    * counting base search
    */
-  class MincFactors {
-  public:
-    MincFactors();
-    double get(int domSize);
-  private:
-    void precompute(void);
-  private:
-    // The maximum factor that can be calculated with a double is the 170th,
-    // else we have an overflow
-    static const int MAX_FACTOR = 170;
-    double mincFactors[MAX_FACTOR];
-    bool computed;
-  };
 
-  forceinline
-  MincFactors::MincFactors() :
-    computed(false) {}
+  // The maximum factor that can be calculated with a double is the 170th,
+  // else we have an overflow
+  const int MAX_MINC_FACTOR = 170;
+  extern const double mincFactors[MAX_MINC_FACTOR];
 
-  forceinline
-  void MincFactors::precompute(void) {
-    double fac = 1;
-    mincFactors[0] = 1;
-    for (int i=2; i<MAX_FACTOR+1; i++) {
-      fac *= i;
-      mincFactors[i-1] = ::pow(fac,1.0/i);
-    }
-    computed = true;
-  }
-
-  forceinline
-  double MincFactors::get(int domSize) {
-    // If the requested domSize is greater than MAX_FACTOR, we return INFINITY.
-    // This way, the Liang&Bai bound will be used instead
-    if (domSize >= MAX_FACTOR) return INFINITY;
-    // We only compute the factors if we need it
-    if (!computed) precompute();
+  static double getMincfactor(int domSize) {
+    assert(domSize-1 < MAX_MINC_FACTOR);
     return mincFactors[domSize-1];
   }
 
@@ -84,63 +56,17 @@ namespace Gecode { namespace Int { namespace Distinct {
    * are used to compute the Liang and Bai upper bound for the permanent in
    * counting base search
    */
-  class LiangBaiFactors {
-  public:
-    LiangBaiFactors();
-    double get(int index, int domSize);
-  private:
-    void precompute(int newNbVar, int newLargestDomSize);
-  private:
-    int nbVar;
-    int largestDomSize;
-    double **liangBaiFactors;
-  };
 
-  forceinline
-  double LiangBaiFactors::get(int index, int domSize) {
-    // We only compute the factors if we need it
-    bool compute = false;
-    int a = index+1>nbVar?compute=true,index+1:nbVar;
-    int b = domSize>largestDomSize?compute=true,domSize:largestDomSize;
-    // The minimum factor matrix we compute is 128x128
-    if (compute) precompute(std::max(a,128),std::max(b,128));
-    return liangBaiFactors[index][domSize-1];
+  const int WIDTH_LIANG_BAI_FACTOR = 256;
+  extern const double liangBaiFactors[WIDTH_LIANG_BAI_FACTOR
+                                      *WIDTH_LIANG_BAI_FACTOR];
+
+  static double getLiangBaiFactor(int index, int domSize) {
+    assert(index < WIDTH_LIANG_BAI_FACTOR);
+    assert(domSize-1 < WIDTH_LIANG_BAI_FACTOR);
+    return liangBaiFactors[index*WIDTH_LIANG_BAI_FACTOR + domSize-1];
   }
 
-  forceinline
-  void LiangBaiFactors::precompute(int newNbVar, int newLargestDomSize) {
-    // If we need bigger factors, we reuse our latest precomputation
-    liangBaiFactors = heap.realloc(liangBaiFactors,nbVar,newNbVar);
-    for (int i=0; i<newNbVar; i++)
-      liangBaiFactors[i] = heap.realloc(liangBaiFactors[i], largestDomSize,
-                                        newLargestDomSize);
-
-    for (int i = 1; i <= newNbVar; i++) {
-      double b = std::ceil(i/2.0);
-      int j;
-      // if i<=nb_var, we already computed 1..largest_domain_size for j
-      if ( i <= nbVar) j = largestDomSize+1; else j = 1;
-      for (; j <= newLargestDomSize; j++) {
-        double a = std::ceil((j+1)/2.0);
-        double q = std::min(a,b);
-        liangBaiFactors[i-1][j-1] = q*(j-q+1);
-      }
-    }
-
-    nbVar = newNbVar;
-    largestDomSize = newLargestDomSize;
-  }
-
-  forceinline
-  LiangBaiFactors::LiangBaiFactors() :
-    nbVar(0), largestDomSize(0) {
-  }
-
-  /**
-   * \brief Shared factors used by all instances of cbs distinct branchers
-   */
-  extern MincFactors mincFactors;
-  extern LiangBaiFactors liangBaiFactors;
 
   struct UB {
     double minc;
@@ -152,9 +78,9 @@ namespace Gecode { namespace Int { namespace Distinct {
    */
   forceinline
   void upperBoundUpdate(UB& ub, int index, int oldDomSize, int newDomSize) {
-    ub.minc *= mincFactors.get(newDomSize) / mincFactors.get(oldDomSize);
-    ub.liangBai *= liangBaiFactors.get(index,newDomSize) /
-                   liangBaiFactors.get(index,oldDomSize);
+    ub.minc *= getMincfactor(newDomSize) / getMincfactor(oldDomSize);
+    ub.liangBai *= getLiangBaiFactor(index,newDomSize) /
+                   getLiangBaiFactor(index,oldDomSize);
   }
 
   /**
@@ -287,8 +213,8 @@ namespace Gecode { namespace Int { namespace Distinct {
     // Minc and Brégman and Liang and Bai upper bound.
     UB ub; ub.minc=1; ub.liangBai=1;
     for (int i=0; i<viewArray.size(); i++) {
-      ub.minc *= mincFactors.get(viewArray[i].size());
-      ub.liangBai *= liangBaiFactors.get(i,viewArray[i].size());
+      ub.minc *= getMincfactor(viewArray[i].size());
+      ub.liangBai *= getLiangBaiFactor(i,viewArray[i].size());
     }
 
     dist->setSupportSize(std::min(ub.minc, ::sqrt(ub.liangBai)));

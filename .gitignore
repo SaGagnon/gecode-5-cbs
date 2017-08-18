@@ -6,8 +6,16 @@
 .idea/
 *.iml
 
+tools/flatzinc/fzn-gecode
+
+examples/*
+!examples/*.cpp
+
+*moc_*
+
 cmake-build-debug/
 cmake-build-release/
+*.o
 
 Makefile
 config.log

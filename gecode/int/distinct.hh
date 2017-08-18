@@ -75,7 +75,9 @@ namespace Gecode { namespace Int { namespace Distinct {
     Val(Space& home, bool share, Val<View>& p);
   public:
     /// Counting base search densities computation for branching
-    virtual int slndist(Space& home, SolnDistribution* dist) const;
+    virtual void slndist(Space& home, SolnDistribution* dist) const;
+    /// TODO: Comment
+    virtual int slndistsize(SolnDistributionSize* size) const;
     /// Copy propagator during cloning
     virtual Actor*     copy(Space& home, bool share);
     /// Perform propagation
@@ -94,8 +96,12 @@ namespace Gecode { namespace Int { namespace Distinct {
    *        Satisfaction Problems
    */
   template<class View>
-  int cbsdistinct(Space& home, unsigned int prop_id, const ViewArray<View>& x,
+  void cbsdistinct(Space& home, unsigned int prop_id, const ViewArray<View>& x,
                   SolnDistribution* dist);
+
+  template<class View>
+  int cbssize(const ViewArray<View>& x, SolnDistributionSize* size);
+
 
   /**
    * \brief Eliminate singletons by naive value propagation
@@ -157,7 +163,9 @@ namespace Gecode { namespace Int { namespace Distinct {
     Bnd(Space& home, bool share, Bnd<View>& p);
   public:
     /// Counting base search densities computation for branching
-    virtual int slndist(Space& home, SolnDistribution* dist) const;
+    virtual void slndist(Space& home, SolnDistribution* dist) const;
+    /// TODO: Comment
+    virtual int slndistsize(SolnDistributionSize* size) const;
     /// Post propagator for view array \a x
     static ExecStatus post(Home home, ViewArray<View>& x);
     /// Perform propagation
@@ -278,7 +286,9 @@ namespace Gecode { namespace Int { namespace Distinct {
     Dom(Home home, ViewArray<View>& x);
   public:
     /// Counting base search densities computation for branching
-    virtual int slndist(Space& home, SolnDistribution* dist) const;
+    virtual void slndist(Space& home, SolnDistribution* dist) const;
+    /// TODO: Comment
+    virtual int slndistsize(SolnDistributionSize* size) const;
     /// Perform propagation
     virtual ExecStatus propagate(Space& home, const ModEventDelta& med);
     /**

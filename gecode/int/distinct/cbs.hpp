@@ -193,14 +193,8 @@ namespace Gecode { namespace Int { namespace Distinct {
   };
 
   template<class View>
-  int cbsdistinct(Space& home, unsigned int prop_id, const ViewArray<View>& x,
+  void cbsdistinct(Space& home, unsigned int prop_id, const ViewArray<View>& x,
                   SolnDistribution* dist) {
-    if (dist == NULL) {
-      int d = 0;
-      for (int i=0; i<x.size(); i++) if (!x[i].assigned()) d += x[i].size();
-      return d;
-    }
-
     assert(!x.assigned());
     Region r(home);
     ViewArray<View> viewArray(r,x);
@@ -217,7 +211,7 @@ namespace Gecode { namespace Int { namespace Distinct {
       ub.liangBai *= getLiangBaiFactor(i,viewArray[i].size());
     }
 
-    dist->setSupportSize(std::min(ub.minc, ::sqrt(ub.liangBai)));
+    dist->setSupportSize(prop_id, std::min(ub.minc, ::sqrt(ub.liangBai)));
 
     // Span from the minimum to the maximum value of the union of all
     // variable domains
@@ -262,7 +256,15 @@ namespace Gecode { namespace Int { namespace Distinct {
       }
     }
 
-    return 0;
+  }
+
+  template<class View>
+  int cbssize(const ViewArray<View>& x, SolnDistributionSize* size) {
+    int d = 0;
+    for (int i=0; i<x.size(); i++)
+      if (!x[i].assigned() && size->varInBrancher(x[i].id()))
+        d += x[i].size();
+    return d;
   }
 
 }}}

@@ -157,9 +157,14 @@ namespace Gecode { namespace Int { namespace Distinct {
     : NaryPropagator<View,PC_INT_VAL>(home,share,p) {}
 
   template<class View>
-  int
+  void
   Val<View>::slndist(Space& home, SolnDistribution* dist) const {
-    return cbsdistinct(home,this->id(),x,dist);
+    cbsdistinct(home,this->id(),x,dist);
+  }
+
+  template<class View>
+  int Val<View>::slndistsize(SolnDistributionSize* size) const {
+    return cbssize(x,size);
   }
 
   template<class View>

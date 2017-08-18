@@ -73,9 +73,14 @@ namespace Gecode { namespace Int { namespace Distinct {
   }
 
   template<class View>
-  int
+  void
   Bnd<View>::slndist(Space& home, SolnDistribution* dist) const {
-    return cbsdistinct(home,this->id(),x,dist);
+    cbsdistinct(home,this->id(),x,dist);
+  }
+
+  template<class View>
+  int Bnd<View>::slndistsize(SolnDistributionSize* size) const {
+    return cbssize(x,size);
   }
 
   template<class View>

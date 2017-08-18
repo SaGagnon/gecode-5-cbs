@@ -247,17 +247,9 @@ namespace Gecode { namespace Int { namespace Extensional {
    *        Search Heurisitics (section 3)
    */
   template<class View, class Val, class Degree, class StateIdx>
-  forceinline int
+  forceinline void
   LayeredGraph<View,Val,Degree,StateIdx>::slndist(Space &home,
                                               SolnDistribution* dist) const {
-    if (dist == NULL) {
-      int d = 0;
-      for (int i=0; i<n; i++)
-        if (!layers[i].x.assigned())
-          d += layers[i].x.size();
-      return d;
-    }
-
     if (layers[0].states == NULL)
       const_cast<LayeredGraph<View,Val,Degree,StateIdx>*>(this)
         ->alloc_state(home);
@@ -300,7 +292,7 @@ namespace Gecode { namespace Int { namespace Extensional {
 
     // Number of possible path in the layered graph
     const double n_paths = statesCnt[0][0].o_paths;
-    dist->setSupportSize(n_paths);
+    dist->setSupportSize(id(), n_paths);
 
   //     DEBUG =================================================================
   //    int max_n_states = 0;
@@ -348,10 +340,17 @@ namespace Gecode { namespace Int { namespace Extensional {
   //        std::cout << dens << std::endl;
       }
     }
-
-    return 0;
   }
 
+  template<class View, class Val, class Degree, class StateIdx>
+  forceinline int
+  LayeredGraph<View,Val,Degree,StateIdx>::slndistsize(SolnDistributionSize* size) const {
+    int d = 0;
+    for (int i=0; i<n; i++)
+      if (!layers[i].x.assigned() && size->varInBrancher(layers[i].x.id()))
+        d += layers[i].x.size();
+    return d;
+  }
 
   /*
    * The layered graph

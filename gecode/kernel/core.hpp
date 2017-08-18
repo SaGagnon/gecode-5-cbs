@@ -1020,6 +1020,12 @@ namespace Gecode {
     virtual void setSupportSize(unsigned int prop_id, double count) = 0;
   };
 
+  // TODO: Briefing et meilleur nom
+  class SolnDistributionSize {
+  public:
+    virtual bool varInBrancher(unsigned int var_id) = 0;
+  };
+
   /**
    * \brief Base-class for propagators
    * \ingroup TaskActor
@@ -1145,7 +1151,9 @@ namespace Gecode {
     /// Return the accumlated failure count
     double afc(const Space& home) const;
     /// Compute solution distribution for the given propagator
-    virtual int slndist(Space& home, SolnDistribution* dist) const;
+    virtual void slndist(Space& home, SolnDistribution* dist) const;
+    /// TODO: Comment
+    virtual int slndistsize(SolnDistributionSize* s) const;
     //@}
     /// \name Id and group support
     //@{
@@ -3478,8 +3486,12 @@ namespace Gecode {
     return const_cast<Space&>(home).gpi.afc(const_cast<Propagator&>(*this).gpi());
   }
 
+  forceinline void
+  Propagator::slndist(Space&, SolnDistribution*) const {}
+
+
   forceinline int
-  Propagator::slndist(Space&, SolnDistribution*) const {
+  Propagator::slndistsize(SolnDistributionSize*) const {
     return 0;
   }
 

@@ -1014,8 +1014,10 @@ namespace Gecode {
    */
   class SolnDistribution {
   public:
-    virtual void setMarginalDistribution(unsigned int var_id, int val, double density) = 0;
-    virtual void setSupportSize(double count) = 0;
+    virtual void setMarginalDistribution(unsigned int prop_id,
+                                         unsigned int var_id, int val,
+                                         double density) = 0;
+    virtual void setSupportSize(unsigned int prop_id, double count) = 0;
   };
 
   /**

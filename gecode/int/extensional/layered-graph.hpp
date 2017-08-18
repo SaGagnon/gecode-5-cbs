@@ -344,7 +344,7 @@ namespace Gecode { namespace Int { namespace Extensional {
         }
         double dens = (double)count / n_paths;
         assert(n_paths != 0);
-        dist->setMarginalDistribution(l->x.id(), l->x.baseval(s->val), dens);
+        dist->setMarginalDistribution(id(), l->x.id(), l->x.baseval(s->val), dens);
   //        std::cout << dens << std::endl;
       }
     }

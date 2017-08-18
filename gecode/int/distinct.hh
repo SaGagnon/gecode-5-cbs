@@ -94,7 +94,8 @@ namespace Gecode { namespace Int { namespace Distinct {
    *        Satisfaction Problems
    */
   template<class View>
-  int cbsdistinct(Space& home, const ViewArray<View>& x, SolnDistribution* dist);
+  int cbsdistinct(Space& home, unsigned int prop_id, const ViewArray<View>& x,
+                  SolnDistribution* dist);
 
   /**
    * \brief Eliminate singletons by naive value propagation

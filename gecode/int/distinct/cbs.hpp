@@ -193,7 +193,7 @@ namespace Gecode { namespace Int { namespace Distinct {
   };
 
   template<class View>
-  int cbsdistinct(Space& home, const ViewArray<View>& x,
+  int cbsdistinct(Space& home, unsigned int prop_id, const ViewArray<View>& x,
                   SolnDistribution* dist) {
     if (dist == NULL) {
       int d = 0;
@@ -257,7 +257,7 @@ namespace Gecode { namespace Int { namespace Distinct {
       // Normalization
       for (ViewValues<View> val(viewArray[i]); val(); ++val) {
         double d = solcounts(val.val()) / normalization;
-        dist->setMarginalDistribution(
+        dist->setMarginalDistribution(prop_id,
           viewArray[i].id(),viewArray[i].baseval(val.val()),d);
       }
     }

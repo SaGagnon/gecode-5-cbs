@@ -592,7 +592,9 @@ namespace Gecode { namespace Int { namespace Linear {
     /// Create copy during cloning
     virtual Actor* copy(Space& home, bool share);
     /// Counting base search densities computation for branching
-    virtual int slndist(Space& home, SolnDistribution* dist) const;
+    virtual void slndist(Space& home, SolnDistribution* dist) const;
+    /// TODO: Comment
+    virtual int slndistsize(SolnDistributionSize* size) const;
     /// Perform propagation
     virtual ExecStatus propagate(Space& home, const ModEventDelta& med);
     /// Post propagator for \f$\sum_{i=0}^{|x|-1}x_i-\sum_{i=0}^{|y|-1}y_i=c\f$
@@ -733,7 +735,9 @@ namespace Gecode { namespace Int { namespace Linear {
     /// Create copy during cloning
     virtual Actor* copy(Space& home, bool share);
     /// Counting base search densities computation for branching
-    virtual int slndist(Space& home, SolnDistribution* dist) const;
+    virtual void slndist(Space& home, SolnDistribution* dist) const;
+    /// TODO: Comment
+    virtual int slndistsize(SolnDistributionSize* size) const;
     /// Perform propagation
     virtual ExecStatus propagate(Space& home, const ModEventDelta& med);
     /// Post propagator for \f$\sum_{i=0}^{|x|-1}x_i-\sum_{i=0}^{|y|-1}y_i\leq c\f$

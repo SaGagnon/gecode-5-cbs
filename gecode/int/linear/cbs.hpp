@@ -32,10 +32,15 @@ namespace Gecode { namespace Int { namespace Linear {
 
   template<class P, class N>
   forceinline int
-  nonAssignedSize(const ViewArray<P>& x, const ViewArray<N>& y) {
+  nonAssignedSize(SolnDistributionSize* size,
+                  const ViewArray<P>& x, const ViewArray<N>& y) {
     int d = 0;
-    for (int i=0; i<x.size(); i++) if (!x[i].assigned()) d += x[i].size();
-    for (int i=0; i<y.size(); i++) if (!y[i].assigned()) d += y[i].size();
+    for (int i=0; i<x.size(); i++)
+      if (!x[i].assigned() && size->varInBrancher(x[i].id()))
+        d += x[i].size();
+    for (int i=0; i<y.size(); i++)
+      if (!y[i].assigned() && size->varInBrancher(x[i].id()))
+        d += y[i].size();
     return d;
   }
 
@@ -111,7 +116,8 @@ template<class View>
 
   template<class View>
   forceinline void
-  approx_dens_for_array(Space& home, const ViewArray<View>& a, bool P,
+  approx_dens_for_array(Space& home, unsigned int prop_id,
+                        const ViewArray<View>& a, bool P,
                         SolnDistribution* dist,
                         double mean, double variance) {
     // For every variable in the domain of ViewArray a
@@ -149,6 +155,7 @@ template<class View>
         int j = 0;
         for (ViewValues<View> val(a[i]); val(); ++val) {
           dist->setMarginalDistribution(
+            prop_id,
             a[i].id(),
             a[i].baseval(val.val()),
             approx_dens_a[j] / approx_sum
@@ -160,25 +167,20 @@ template<class View>
   }
 
   template<> forceinline void
-  approx_dens_for_array(Space&, const ViewArray<NoView>&, bool,
+  approx_dens_for_array(Space&, unsigned int, const ViewArray<NoView>&, bool,
                         SolnDistribution*, double, double) {}
 
   template<class P, class N>
-  int
-  cbslinear(Space& home, SolnDistribution* dist,
+  void
+  cbslinear(Space& home, unsigned int prop_id, SolnDistribution* dist,
             const ViewArray<P>& x, const ViewArray<N>& y,
             int lb, int ub) {
-    if (dist == NULL)
-      return nonAssignedSize(x, y);
-
     // Mean and variance of the distribution
     double mean, variance;
     MV_dist(lb, ub, x, y, mean, variance);
 
-    approx_dens_for_array(home,x,true,dist,mean,variance);
-    approx_dens_for_array(home,y,false,dist,mean,variance);
-
-    return 0;
+    approx_dens_for_array(home,prop_id,x,true,dist,mean,variance);
+    approx_dens_for_array(home,prop_id,y,false,dist,mean,variance);
   }
 
 }}}

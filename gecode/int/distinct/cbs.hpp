@@ -41,12 +41,13 @@ namespace Gecode { namespace Int { namespace Distinct {
 
   // The maximum factor that can be calculated with a double is the 170th,
   // else we have an overflow
-  const int MAX_MINC_FACTOR = 170;
+  const int MAX_MINC_FACTOR = 1000;
   extern const double mincFactors[MAX_MINC_FACTOR];
 
   static double getMincfactor(int domSize) {
     if (domSize-1 >= MAX_MINC_FACTOR)
-      throw Int::OutOfLimits("Int::Distinct::getMincfactor");
+      throw Int::OutOfLimits(
+        "Int::Distinct::getMincfactor & Int::Distinct::getLiangBaiFactor");
     return mincFactors[domSize-1];
   }
 
@@ -59,7 +60,7 @@ namespace Gecode { namespace Int { namespace Distinct {
    * counting base search
    */
 
-  const int WIDTH_LIANG_BAI_FACTOR = 256;
+  const int WIDTH_LIANG_BAI_FACTOR = 1000;
   extern const double liangBaiFactors[WIDTH_LIANG_BAI_FACTOR
                                       *WIDTH_LIANG_BAI_FACTOR];
 

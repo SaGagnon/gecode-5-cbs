@@ -27,6 +27,7 @@
 
 #include <set>
 #include <vector>
+#include <limits>
 
 namespace Gecode { namespace Int { namespace Distinct {
 
@@ -44,7 +45,8 @@ namespace Gecode { namespace Int { namespace Distinct {
   extern const double mincFactors[MAX_MINC_FACTOR];
 
   static double getMincfactor(int domSize) {
-    assert(domSize-1 < MAX_MINC_FACTOR);
+    if (domSize-1 >= MAX_MINC_FACTOR)
+      throw Int::OutOfLimits("Int::Distinct::getMincfactor");
     return mincFactors[domSize-1];
   }
 

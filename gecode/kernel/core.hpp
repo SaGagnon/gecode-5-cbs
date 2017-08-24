@@ -1153,7 +1153,8 @@ namespace Gecode {
     /// Compute solution distribution for the given propagator
     virtual void slndist(Space& home, SolnDistribution* dist) const;
     /// TODO: Comment
-    virtual int slndistsize(SolnDistributionSize* s) const;
+    virtual void slndistsize(SolnDistributionSize* s, unsigned int& domAggr,
+                             unsigned int& domAggrB) const;
     //@}
     /// \name Id and group support
     //@{
@@ -3490,9 +3491,11 @@ namespace Gecode {
   Propagator::slndist(Space&, SolnDistribution*) const {}
 
 
-  forceinline int
-  Propagator::slndistsize(SolnDistributionSize*) const {
-    return 0;
+  forceinline void
+  Propagator::slndistsize(SolnDistributionSize*, unsigned int& domAggr,
+                          unsigned int& domAggrB) const {
+    domAggr = 0;
+    domAggrB = 0;
   }
 
   forceinline unsigned int

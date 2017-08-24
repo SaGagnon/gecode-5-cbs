@@ -31,17 +31,26 @@ namespace Gecode { namespace Int { namespace Linear {
   class NoView;
 
   template<class P, class N>
-  forceinline int
+  forceinline void
   nonAssignedSize(SolnDistributionSize* size,
-                  const ViewArray<P>& x, const ViewArray<N>& y) {
-    int d = 0;
-    for (int i=0; i<x.size(); i++)
-      if (!x[i].assigned() && size->varInBrancher(x[i].id()))
-        d += x[i].size();
-    for (int i=0; i<y.size(); i++)
-      if (!y[i].assigned() && size->varInBrancher(x[i].id()))
-        d += y[i].size();
-    return d;
+                  const ViewArray<P>& x, const ViewArray<N>& y,
+                  unsigned int& domAggr, unsigned int& domAggrB) {
+    domAggr = 0;
+    domAggrB = 0;
+    for (int i=0; i<x.size(); i++) {
+      if (!x[i].assigned()) {
+        domAggr += x[i].size();
+        if (size->varInBrancher(x[i].id()))
+          domAggrB += x[i].size();
+      }
+    }
+    for (int i=0; i<y.size(); i++) {
+      if (!y[i].assigned()) {
+        domAggr += y[i].size();
+        if (size->varInBrancher(y[i].id()))
+          domAggrB += y[i].size();
+      }
+    }
   }
 
 template<class View>

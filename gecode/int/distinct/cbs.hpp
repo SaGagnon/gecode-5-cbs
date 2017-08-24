@@ -262,12 +262,17 @@ namespace Gecode { namespace Int { namespace Distinct {
   }
 
   template<class View>
-  int cbssize(const ViewArray<View>& x, SolnDistributionSize* size) {
-    int d = 0;
-    for (int i=0; i<x.size(); i++)
-      if (!x[i].assigned() && size->varInBrancher(x[i].id()))
-        d += x[i].size();
-    return d;
+  void cbssize(const ViewArray<View>& x, SolnDistributionSize* size,
+              unsigned int& domAggr, unsigned int& domAggrB) {
+    domAggr = 0;
+    domAggrB = 0;
+    for (int i=0; i<x.size(); i++) {
+      if (!x[i].assigned()) {
+        domAggr += x[i].size();
+        if (size->varInBrancher(x[i].id()))
+          domAggrB += x[i].size();
+      }
+    }
   }
 
 }}}

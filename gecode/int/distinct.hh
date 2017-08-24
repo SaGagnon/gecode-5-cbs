@@ -76,8 +76,8 @@ namespace Gecode { namespace Int { namespace Distinct {
   public:
     /// Counting base search densities computation for branching
     virtual void slndist(Space& home, SolnDistribution* dist) const;
-    /// TODO: Comment
-    virtual int slndistsize(SolnDistributionSize* size) const;
+    virtual void slndistsize(SolnDistributionSize* s, unsigned int& domAggr,
+                             unsigned int& domAggrB) const;
     /// Copy propagator during cloning
     virtual Actor*     copy(Space& home, bool share);
     /// Perform propagation
@@ -100,7 +100,8 @@ namespace Gecode { namespace Int { namespace Distinct {
                   SolnDistribution* dist);
 
   template<class View>
-  int cbssize(const ViewArray<View>& x, SolnDistributionSize* size);
+  void cbssize(const ViewArray<View>& x, SolnDistributionSize* s,
+              unsigned int& domAggr, unsigned int& domAggrB);
 
 
   /**
@@ -164,8 +165,8 @@ namespace Gecode { namespace Int { namespace Distinct {
   public:
     /// Counting base search densities computation for branching
     virtual void slndist(Space& home, SolnDistribution* dist) const;
-    /// TODO: Comment
-    virtual int slndistsize(SolnDistributionSize* size) const;
+    virtual void slndistsize(SolnDistributionSize* s, unsigned int& domAggr,
+                             unsigned int& domAggrB) const;
     /// Post propagator for view array \a x
     static ExecStatus post(Home home, ViewArray<View>& x);
     /// Perform propagation
@@ -288,7 +289,8 @@ namespace Gecode { namespace Int { namespace Distinct {
     /// Counting base search densities computation for branching
     virtual void slndist(Space& home, SolnDistribution* dist) const;
     /// TODO: Comment
-    virtual int slndistsize(SolnDistributionSize* size) const;
+    virtual void slndistsize(SolnDistributionSize* s, unsigned int& domAggr,
+                             unsigned int& domAggrB) const;
     /// Perform propagation
     virtual ExecStatus propagate(Space& home, const ModEventDelta& med);
     /**

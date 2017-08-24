@@ -203,7 +203,8 @@ namespace Gecode { namespace Int { namespace Extensional {
     /// Counting base search densities computation for branching
     virtual void slndist(Space& home, SolnDistribution* dist) const;
     /// TODO: Comment
-    virtual int slndistsize(SolnDistributionSize* size) const;
+    virtual void slndistsize(SolnDistributionSize* size, unsigned int& domAggr,
+                            unsigned int& domAggrB) const;
     /// Constructor for posting
     template<class Var>
     LayeredGraph(Home home,

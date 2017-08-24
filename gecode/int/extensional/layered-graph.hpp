@@ -343,13 +343,19 @@ namespace Gecode { namespace Int { namespace Extensional {
   }
 
   template<class View, class Val, class Degree, class StateIdx>
-  forceinline int
-  LayeredGraph<View,Val,Degree,StateIdx>::slndistsize(SolnDistributionSize* size) const {
-    int d = 0;
-    for (int i=0; i<n; i++)
-      if (!layers[i].x.assigned() && size->varInBrancher(layers[i].x.id()))
-        d += layers[i].x.size();
-    return d;
+  forceinline void
+  LayeredGraph<View,Val,Degree,StateIdx>::slndistsize(SolnDistributionSize* size,
+                                                      unsigned int& domAggr,
+                                                      unsigned int& domAggrB) const {
+    domAggr = 0;
+    domAggrB = 0;
+    for (int i=0; i<n; i++) {
+      if (!layers[i].x.assigned()) {
+        domAggr += layers[i].x.size();
+        if (size->varInBrancher(layers[i].x.id()))
+          domAggrB += layers[i].x.size();
+      }
+    }
   }
 
   /*

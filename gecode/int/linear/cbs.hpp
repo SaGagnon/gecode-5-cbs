@@ -180,9 +180,9 @@ template<class View>
 //    unsigned int _reuse_count = 0;
     for (int i = 0; i < viewArray.size(); i++) {
       if (viewArray[i].assigned()) continue;
-      backup.resize(0);
 
       if (i == 0 || !comp(viewArray[i], viewArray[i - 1], true)) {
+        backup.resize(0);
         double mean_i, variance_i;
         {
           double _mean = domainMean(viewArray[i]);

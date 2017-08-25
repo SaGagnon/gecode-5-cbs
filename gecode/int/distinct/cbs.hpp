@@ -251,9 +251,9 @@ namespace Gecode { namespace Int { namespace Distinct {
     backup.reserve((size_t)(maxVal-minVal+1));
     for (int i = 0; i < viewArray.size(); i++) {
       if (viewArray[i].assigned()) continue;
-      backup.resize(0);
 
       if (i == 0 || !comp(viewArray[i], viewArray[i - 1], true)) {
+        backup.resize(0);
         UB varUB = ub;
         upperBoundUpdate(varUB, i, viewArray[i].size(), 1);
         // Normalization constant for keeping densities values between 0 and 1

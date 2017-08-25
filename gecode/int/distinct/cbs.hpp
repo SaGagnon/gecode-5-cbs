@@ -247,7 +247,6 @@ namespace Gecode { namespace Int { namespace Distinct {
     ValToVar valToVar(viewArray,minVal,maxVal);
     SolCounts solcounts(minVal,maxVal);
 
-    bool eq, first_eq;
     std::vector<Record> backup;
     backup.reserve((size_t)(maxVal-minVal+1));
     for (int i = 0; i < viewArray.size(); i++) {

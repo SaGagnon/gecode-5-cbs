@@ -92,73 +92,124 @@ namespace Gecode { namespace Int { namespace Distinct {
    * Used for a faster update of the upper bounds. When we assign a value, we
    * need to know each variable that is affected by the assignment.
    */
-  class ValToVar {
+//  class ValToVar {
+//  public:
+//    template<class View>
+//    ValToVar(const ViewArray<View>& x, int minDomVal, int maxDomVal);
+//    ~ValToVar();
+//
+//    int getNbVarForVal(int val) const;
+//    int get(int val, int ith_var) const;
+//
+//  private:
+//    int nbVal() const;
+//  private:
+//    int *nbVarForVal; // Number of variable for each value
+//    int *valVar; // Value to variables
+//
+//    int minVal;
+//    int maxVal;
+//    int nb_var;
+//  };
+//
+//  template<class View>
+//  ValToVar::ValToVar(const ViewArray<View>& x, int minDomVal, int maxDomVal)
+//    : minVal(minDomVal), maxVal(maxDomVal), nb_var(x.size()) {
+//
+//    nbVarForVal = heap.alloc<int>(nbVal());;
+//    for (int i=0; i<nbVal(); i++) nbVarForVal[i] = 0;
+//
+//    valVar = heap.alloc<int>(nbVal() * nb_var);
+//
+//    for (int var=0; var<x.size(); var++) {
+//      for (ViewValues<View> val(x[var]); val(); ++val) {
+//        // Current value
+//        int v = val.val();
+//        // Number of variables for current value
+//        int *nbVar = &nbVarForVal[v-minVal];
+//
+//        int row=(v-minVal); int width=nb_var; int col=*nbVar;
+//        valVar[row*width + col] = var;
+//
+//        (*nbVar)++;
+//      }
+//    }
+//  }
+//
+//  forceinline
+//  ValToVar::~ValToVar() {
+//    heap.free<int>(nbVarForVal, nbVal());
+//    heap.free<int>(valVar, nb_var*nbVal());
+//  }
+//
+//  forceinline
+//  int ValToVar::getNbVarForVal(int val) const {
+//    return nbVarForVal[val-minVal];
+//  }
+//
+//  forceinline
+//  int ValToVar::get(int val, int ith_var) const {
+//    assert(ith_var < getNbVarForVal(val));
+//    assert(val - minVal >= 0 && val - minVal <= maxVal);
+//    int row=(val-minVal); int width=nb_var; int col=ith_var;
+//    return valVar[row*width + col];
+//  }
+//
+//  forceinline
+//  int ValToVar::nbVal() const {
+//    return maxVal - minVal + 1;
+//  }
+
+  class ValToUpdate {
+  private:
+    class Upt {
+    private:
+      int minVal;
+      int maxVal;
+      unsigned int size() const { return (unsigned int)(maxVal-minVal+1); }
+      double *x;
+    public:
+      Upt(int minDomVal, int maxDomVal)
+        : minVal(minDomVal), maxVal(maxDomVal) {
+        x = heap.alloc<double>(size());
+        for (int i=0; i<size(); i++)
+          x[i] = 1;
+      }
+      ~Upt() { heap.free(x, size()); }
+      double& operator[](int val) {
+        assert(val >= minVal && val <= maxVal);
+        return x[val-minVal];
+      }
+      double operator[](int val) const {
+        return const_cast<Upt*>(this)->operator[](val);
+      }
+    };
+
+    Upt mincUpdate;
+    Upt liangUpdate;
   public:
     template<class View>
-    ValToVar(const ViewArray<View>& x, int minDomVal, int maxDomVal);
-    ~ValToVar();
-
-    int getNbVarForVal(int val) const;
-    int get(int val, int ith_var) const;
-
-  private:
-    int nbVal() const;
-  private:
-    int *nbVarForVal; // Number of variable for each value
-    int *valVar; // Value to variables
-
-    int minVal;
-    int maxVal;
-    int nb_var;
-  };
-
-  template<class View>
-  ValToVar::ValToVar(const ViewArray<View>& x, int minDomVal, int maxDomVal)
-    : minVal(minDomVal), maxVal(maxDomVal), nb_var(x.size()) {
-
-    nbVarForVal = heap.alloc<int>(nbVal());;
-    for (int i=0; i<nbVal(); i++) nbVarForVal[i] = 0;
-
-    valVar = heap.alloc<int>(nbVal() * nb_var);
-
-    for (int var=0; var<x.size(); var++) {
-      for (ViewValues<View> val(x[var]); val(); ++val) {
-        // Current value
-        int v = val.val();
-        // Number of variables for current value
-        int *nbVar = &nbVarForVal[v-minVal];
-
-        int row=(v-minVal); int width=nb_var; int col=*nbVar;
-        valVar[row*width + col] = var;
-
-        (*nbVar)++;
+    ValToUpdate(const ViewArray<View>& x, int minDomVal, int maxDomVal)
+      : mincUpdate(minDomVal, maxDomVal), liangUpdate(minDomVal, maxDomVal) {
+      for (int i=0; i<x.size(); i++) {
+        unsigned int s = x[i].size();
+        for (ViewValues<View> val(x[i]); val(); ++val) {
+          int v = val.val();
+          mincUpdate[v] *= getMincfactor(s-1) / getMincfactor(s);
+          liangUpdate[v] *= getLiangBaiFactor(i, s-1) / getLiangBaiFactor(i, s);
+        }
       }
     }
-  }
 
-  forceinline
-  ValToVar::~ValToVar() {
-    heap.free<int>(nbVarForVal, nbVal());
-    heap.free<int>(valVar, nb_var*nbVal());
-  }
+    double getMincUpdate(int val, unsigned int varSize) const {
+      return mincUpdate[val] / getMincfactor(varSize-1);
+    }
+    double getLiangUpdate(int val, unsigned int idx,
+                          unsigned int varSize) const {
+      return liangUpdate[val] / getLiangBaiFactor(idx, varSize-1);
+    }
+  };
 
-  forceinline
-  int ValToVar::getNbVarForVal(int val) const {
-    return nbVarForVal[val-minVal];
-  }
-
-  forceinline
-  int ValToVar::get(int val, int ith_var) const {
-    assert(ith_var < getNbVarForVal(val));
-    assert(val - minVal >= 0 && val - minVal <= maxVal);
-    int row=(val-minVal); int width=nb_var; int col=ith_var;
-    return valVar[row*width + col];
-  }
-
-  forceinline
-  int ValToVar::nbVal() const {
-    return maxVal - minVal + 1;
-  }
 
   /**
    * \Brief Structure used for storing counts prior to normalization
@@ -244,32 +295,25 @@ namespace Gecode { namespace Int { namespace Distinct {
       if (viewArray[i].max() > maxVal) maxVal = viewArray[i].max();
     }
 
-    ValToVar valToVar(viewArray,minVal,maxVal);
+//    ValToVar valToVar(viewArray,minVal,maxVal);
+    ValToUpdate valToUpdate(viewArray, minVal, maxVal);
     SolCounts solcounts(minVal,maxVal);
 
     std::vector<Record> backup;
     backup.reserve((size_t)(maxVal-minVal+1));
-    for (int i = 0; i < viewArray.size(); i++) {
+    for (unsigned int i = 0; i < viewArray.size(); i++) {
       if (viewArray[i].assigned()) continue;
 
       if (i == 0 || !comp(viewArray[i], viewArray[i - 1], true)) {
         backup.resize(0);
-        UB varUB = ub;
-        upperBoundUpdate(varUB, i, viewArray[i].size(), 1);
         // Normalization constant for keeping densities values between 0 and 1
         double normalization = 0;
         // We calculate the density for every value assignment for the variable
         for (ViewValues<View> val(viewArray[i]); val(); ++val) {
-          UB localUB = varUB;
-          // Upper bound for every variable affected by the assignation
-          int nbVarAffectedByVal = valToVar.getNbVarForVal(val.val());
-          for (int j = 0; j < nbVarAffectedByVal; j++) {
-            int affectedVar = valToVar.get(val.val(), j);
-            if (affectedVar != i)
-              upperBoundUpdate(localUB, i, viewArray[affectedVar].size(),
-                               viewArray[affectedVar].size() - 1);
-          }
-
+          UB localUB = ub;
+          int v = val.val(); unsigned int s = viewArray[i].size();
+          localUB.minc *= valToUpdate.getMincUpdate(v,s);
+          localUB.liangBai *= valToUpdate.getLiangUpdate(v,i,s);
           double lowerUB = std::min(localUB.minc, ::sqrt(localUB.liangBai));
           solcounts(val.val()) = lowerUB;
           normalization += lowerUB;

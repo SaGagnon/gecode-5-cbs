@@ -172,7 +172,7 @@ namespace Gecode { namespace Int { namespace Distinct {
       Upt(int minDomVal, int maxDomVal)
         : minVal(minDomVal), maxVal(maxDomVal) {
         x = heap.alloc<double>(size());
-        for (int i=0; i<size(); i++)
+        for (unsigned int i=0; i<size(); i++)
           x[i] = 1;
       }
       ~Upt() { heap.free(x, size()); }
@@ -246,7 +246,7 @@ namespace Gecode { namespace Int { namespace Distinct {
 
       // If there's no hole and all the above conditions are true, a and b
       // have the same domain
-      if (a.max() - a.min() + 1 == a.size())
+      if (a.max() - a.min() + 1 == (int)a.size())
         return eq ? true : a.varimp()->id() > b.varimp()->id();
 
       ViewRanges<View> aR(a), bR(b);
@@ -301,7 +301,7 @@ namespace Gecode { namespace Int { namespace Distinct {
 
     std::vector<Record> backup;
     backup.reserve((size_t)(maxVal-minVal+1));
-    for (unsigned int i = 0; i < viewArray.size(); i++) {
+    for (int i = 0; i < viewArray.size(); i++) {
       if (viewArray[i].assigned()) continue;
 
       if (i == 0 || !comp(viewArray[i], viewArray[i - 1], true)) {
@@ -323,13 +323,16 @@ namespace Gecode { namespace Int { namespace Distinct {
         for (ViewValues<View> val(viewArray[i]); val(); ++val) {
           Record r;
           r.val = viewArray[i].baseval(val.val());
-          r.dens = solcounts(val.val()) / normalization;;
+          r.dens = solcounts(val.val()) / normalization;
+          double inf = std::numeric_limits<double>::infinity();
+          if (r.dens == -inf || r.dens == inf)
+            throw Int::OutOfLimits("Int::Distinct::cbsdistinct");
           dist->setMarginalDistribution(prop_id, viewArray[i].id(), r.val,
                                         r.dens);
           backup.push_back(r);
         }
       } else {
-        for (int j=0; j<backup.size(); j++) {
+        for (int j=0; j<(int)backup.size(); j++) {
           dist->setMarginalDistribution(prop_id,
                                         viewArray[i].id(),
                                         backup[j].val,

@@ -192,6 +192,7 @@ namespace Gecode { namespace Int { namespace Distinct {
     ValToUpdate(const ViewArray<View>& x, int minDomVal, int maxDomVal)
       : mincUpdate(minDomVal, maxDomVal), liangUpdate(minDomVal, maxDomVal) {
       for (int i=0; i<x.size(); i++) {
+        if (x[i].assigned()) continue;
         unsigned int s = x[i].size();
         for (ViewValues<View> val(x[i]); val(); ++val) {
           int v = val.val();
@@ -270,6 +271,17 @@ namespace Gecode { namespace Int { namespace Distinct {
   void cbsdistinct(Space& home, unsigned int prop_id, const ViewArray<View>& x,
                   SolnDistribution* dist) {
     assert(!x.assigned());
+    {
+      bool compute = false;
+      for (int i=0; i<x.size(); i++) {
+        if (!x[i].assigned() && dist->compute(x[i].id())) {
+          compute = true;
+          break;
+        }
+      }
+      if (!compute) return;
+    }
+
     Region r(home);
     ViewArray<View> viewArray(r,x);
 
@@ -289,10 +301,12 @@ namespace Gecode { namespace Int { namespace Distinct {
 
     // Span from the minimum to the maximum value of the union of all
     // variable domains
-    int minVal = viewArray[0].min(); int maxVal = viewArray[0].max();
+    int minVal = viewArray[0].min();
+    int maxVal = viewArray[0].max();
     for (int i=1; i<viewArray.size(); i++) {
-      if (viewArray[i].min() < minVal) minVal = viewArray[i].min();
-      if (viewArray[i].max() > maxVal) maxVal = viewArray[i].max();
+      if (viewArray[i].assigned()) continue;
+      minVal = std::min(viewArray[i].min(), minVal);
+      maxVal = std::max(viewArray[i].max(), maxVal);
     }
 
 //    ValToVar valToVar(viewArray,minVal,maxVal);
@@ -303,6 +317,7 @@ namespace Gecode { namespace Int { namespace Distinct {
     backup.reserve((size_t)(maxVal-minVal+1));
     for (int i = 0; i < viewArray.size(); i++) {
       if (viewArray[i].assigned()) continue;
+      if (!dist->compute(viewArray[i].id())) continue;
 
       if (i == 0 || !comp(viewArray[i], viewArray[i - 1], true)) {
         backup.resize(0);

@@ -1014,6 +1014,7 @@ namespace Gecode {
    */
   class SolnDistribution {
   public:
+    virtual bool compute(unsigned int var_id) const = 0;
     virtual void setMarginalDistribution(unsigned int prop_id,
                                          unsigned int var_id, int val,
                                          double density) = 0;
@@ -1023,7 +1024,7 @@ namespace Gecode {
   // TODO: Briefing et meilleur nom
   class SolnDistributionSize {
   public:
-    virtual bool varInBrancher(unsigned int var_id) = 0;
+    virtual bool varInBrancher(unsigned int var_id) const = 0;
   };
 
   /**

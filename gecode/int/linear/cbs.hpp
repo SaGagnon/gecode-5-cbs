@@ -161,7 +161,6 @@ template<class View>
                         SolnDistribution* dist,
                         double mean, double variance) {
     // For every variable in the domain of ViewArray viewArray
-
     Region r(home);
     ViewArray<View> viewArray(r,a);
 
@@ -180,6 +179,7 @@ template<class View>
 //    unsigned int _reuse_count = 0;
     for (int i = 0; i < viewArray.size(); i++) {
       if (viewArray[i].assigned()) continue;
+//      if(!dist->compute(viewArray[i].id())) continue;
 
       if (i == 0 || !comp(viewArray[i], viewArray[i - 1], true)) {
         backup.resize(0);
@@ -244,6 +244,25 @@ template<class View>
   cbslinear(Space& home, unsigned int prop_id, SolnDistribution* dist,
             const ViewArray<P>& x, const ViewArray<N>& y,
             int lb, int ub) {
+//    {
+//      bool compute = false;
+//      for (int i=0; i<x.size(); i++) {
+//        if (x[i].assigned() && dist->compute(x[i].id())) {
+//          compute = true;
+//          break;
+//        }
+//      }
+//      if (!compute) {
+//        for (int i=0; i<y.size(); i++) {
+//          if (y[i].assigned() && dist->compute(y[i].id())) {
+//            compute = true;
+//            break;
+//          }
+//        }
+//      }
+//      if (!compute) return;
+//    }
+
     // Mean and variance of the distribution
     double mean, variance;
     MV_dist(lb, ub, x, y, mean, variance);

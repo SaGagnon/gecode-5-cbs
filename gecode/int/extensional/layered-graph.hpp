@@ -249,7 +249,8 @@ namespace Gecode { namespace Int { namespace Extensional {
   template<class View, class Val, class Degree, class StateIdx>
   forceinline void
   LayeredGraph<View,Val,Degree,StateIdx>::slndist(Space &home,
-                                              SolnDistribution* dist) const {
+                                                  SolnDistribution* dist,
+                                                  SolnDistribution::Type) const {
     if (layers[0].states == NULL)
       const_cast<LayeredGraph<View,Val,Degree,StateIdx>*>(this)
         ->alloc_state(home);

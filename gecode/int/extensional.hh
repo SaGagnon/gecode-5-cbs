@@ -201,7 +201,8 @@ namespace Gecode { namespace Int { namespace Extensional {
                  LayeredGraph<View,Val,Degree,StateIdx>& p);
   public:
     /// Counting base search densities computation for branching
-    virtual void slndist(Space& home, SolnDistribution* dist) const;
+    virtual void slndist(Space& home, SolnDistribution* dist,
+                         SolnDistribution::Type type) const;
     /// TODO: Comment
     virtual void slndistsize(SolnDistributionSize* size, unsigned int& domAggr,
                             unsigned int& domAggrB) const;

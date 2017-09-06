@@ -395,7 +395,8 @@ namespace Gecode { namespace Int { namespace Linear {
 
   template<class Val, class P, class N>
   void
-  Eq<Val,P,N>::slndist(Space& home, SolnDistribution* dist) const {
+  Eq<Val,P,N>::slndist(Space& home, SolnDistribution* dist,
+                         SolnDistribution::Type) const {
     cbslinear(home,this->id(),dist,x,y,c,c);
   };
 
@@ -760,7 +761,8 @@ namespace Gecode { namespace Int { namespace Linear {
 
   template<class Val, class P, class N>
   void
-  Lq<Val,P,N>::slndist(Space& home, SolnDistribution* dist) const {
+  Lq<Val,P,N>::slndist(Space& home, SolnDistribution* dist,
+                         SolnDistribution::Type) const {
     int lb=0;
     for (int i=0; i<x.size(); i++)
       lb += x[i].min();

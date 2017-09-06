@@ -1009,10 +1009,18 @@ namespace Gecode {
     ~PostInfo(void);
   };
 
+
+
   /**
    * \brief Interface class to set densities for each variable and value.
    */
   class SolnDistribution {
+  public:
+    //TODO: Name
+    enum Type {
+      ALL,
+      MAX_PER_PROP
+    };
   public:
     virtual bool compute(unsigned int var_id) const = 0;
     virtual void setMarginalDistribution(unsigned int prop_id,
@@ -1152,7 +1160,8 @@ namespace Gecode {
     /// Return the accumlated failure count
     double afc(const Space& home) const;
     /// Compute solution distribution for the given propagator
-    virtual void slndist(Space& home, SolnDistribution* dist) const;
+    virtual void slndist(Space& home, SolnDistribution* dist,
+                         SolnDistribution::Type type = SolnDistribution::ALL) const;
     /// TODO: Comment
     virtual void slndistsize(SolnDistributionSize* s, unsigned int& domAggr,
                              unsigned int& domAggrB) const;
@@ -3489,7 +3498,7 @@ namespace Gecode {
   }
 
   forceinline void
-  Propagator::slndist(Space&, SolnDistribution*) const {}
+  Propagator::slndist(Space&, SolnDistribution*, SolnDistribution::Type) const {}
 
 
   forceinline void

@@ -75,7 +75,8 @@ namespace Gecode { namespace Int { namespace Distinct {
     Val(Space& home, bool share, Val<View>& p);
   public:
     /// Counting base search densities computation for branching
-    virtual void slndist(Space& home, SolnDistribution* dist) const;
+    virtual void slndist(Space& home, SolnDistribution* dist,
+                         SolnDistribution::Type type) const;
     virtual void slndistsize(SolnDistributionSize* s, unsigned int& domAggr,
                              unsigned int& domAggrB) const;
     /// Copy propagator during cloning
@@ -97,7 +98,7 @@ namespace Gecode { namespace Int { namespace Distinct {
    */
   template<class View>
   void cbsdistinct(Space& home, unsigned int prop_id, const ViewArray<View>& x,
-                  SolnDistribution* dist);
+                  SolnDistribution* dist, SolnDistribution::Type type);
 
   template<class View>
   void cbssize(const ViewArray<View>& x, SolnDistributionSize* s,
@@ -164,7 +165,8 @@ namespace Gecode { namespace Int { namespace Distinct {
     Bnd(Space& home, bool share, Bnd<View>& p);
   public:
     /// Counting base search densities computation for branching
-    virtual void slndist(Space& home, SolnDistribution* dist) const;
+    virtual void slndist(Space& home, SolnDistribution* dist,
+                         SolnDistribution::Type type) const;
     virtual void slndistsize(SolnDistributionSize* s, unsigned int& domAggr,
                              unsigned int& domAggrB) const;
     /// Post propagator for view array \a x
@@ -287,7 +289,8 @@ namespace Gecode { namespace Int { namespace Distinct {
     Dom(Home home, ViewArray<View>& x);
   public:
     /// Counting base search densities computation for branching
-    virtual void slndist(Space& home, SolnDistribution* dist) const;
+    virtual void slndist(Space& home, SolnDistribution* dist,
+                         SolnDistribution::Type type) const;
     /// TODO: Comment
     virtual void slndistsize(SolnDistributionSize* s, unsigned int& domAggr,
                              unsigned int& domAggrB) const;

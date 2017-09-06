@@ -158,8 +158,9 @@ namespace Gecode { namespace Int { namespace Distinct {
 
   template<class View>
   void
-  Val<View>::slndist(Space& home, SolnDistribution* dist) const {
-    cbsdistinct(home,this->id(),x,dist);
+  Val<View>::slndist(Space& home, SolnDistribution* dist,
+                         SolnDistribution::Type type) const {
+    cbsdistinct(home,this->id(),x,dist, type);
   }
 
   template<class View>

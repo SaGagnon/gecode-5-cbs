@@ -179,7 +179,7 @@ template<class View>
 //    unsigned int _reuse_count = 0;
     for (int i = 0; i < viewArray.size(); i++) {
       if (viewArray[i].assigned()) continue;
-//      if(!dist->compute(viewArray[i].id())) continue;
+      if(!dist->compute(viewArray[i].id())) continue;
 
       if (i == 0 || !comp(viewArray[i], viewArray[i - 1], true)) {
         backup.resize(0);

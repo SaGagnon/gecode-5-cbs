@@ -162,35 +162,50 @@ namespace Gecode { namespace Int { namespace Distinct {
 
   class ValToUpdate {
   private:
-    class Upt {
+    template<typename T>
+    class Arr {
     private:
       int minVal;
       int maxVal;
-      unsigned int size() const { return (unsigned int)(maxVal-minVal+1); }
-      double *x;
+      T *x;
     public:
-      Upt(int minDomVal, int maxDomVal)
+      Arr(int minDomVal, int maxDomVal)
         : minVal(minDomVal), maxVal(maxDomVal) {
-        x = heap.alloc<double>(size());
-        for (unsigned int i=0; i<size(); i++)
-          x[i] = 1;
+        x = heap.alloc<T>(size());
       }
-      ~Upt() { heap.free(x, size()); }
-      double& operator[](int val) {
+      ~Arr() { heap.free(x, size()); }
+      T& operator[](int val) {
         assert(val >= minVal && val <= maxVal);
         return x[val-minVal];
       }
-      double operator[](int val) const {
-        return const_cast<Upt*>(this)->operator[](val);
+      T operator[](int val) const {
+        return const_cast<Arr*>(this)->operator[](val);
       }
+      unsigned int size() const { return (unsigned int)(maxVal-minVal+1); }
+      int getMin() const { return minVal; }
+      int getMax() const { return maxVal; }
     };
 
-    Upt mincUpdate;
-    Upt liangUpdate;
+    Arr<double> mincUpdate;
+    Arr<double> liangUpdate;
+    // TODO: changer ce nom... et explication...
+    struct BestVarForVal { int pos; unsigned int domsize; };
+    Arr<BestVarForVal> best;
   public:
     template<class View>
     ValToUpdate(const ViewArray<View>& x, int minDomVal, int maxDomVal)
-      : mincUpdate(minDomVal, maxDomVal), liangUpdate(minDomVal, maxDomVal) {
+      : mincUpdate(minDomVal, maxDomVal), liangUpdate(minDomVal, maxDomVal),
+        best(minDomVal, maxDomVal) {
+      assert(mincUpdate.size() == liangUpdate.size()
+             && mincUpdate.size() == best.size());
+      for (int val=best.getMin(); val<=best.getMax(); val++) {
+        mincUpdate[val] = 1;
+        liangUpdate[val] = 1;
+        BestVarForVal b;
+        b.pos = -1;
+        b.domsize = std::numeric_limits<unsigned int>::max();
+        best[val] = b;
+      }
       for (int i=0; i<x.size(); i++) {
         if (x[i].assigned()) continue;
         unsigned int s = x[i].size();
@@ -198,6 +213,12 @@ namespace Gecode { namespace Int { namespace Distinct {
           int v = val.val();
           mincUpdate[v] *= getMincfactor(s-1) / getMincfactor(s);
           liangUpdate[v] *= getLiangBaiFactor(i, s-1) / getLiangBaiFactor(i, s);
+          if (s < best[v].domsize) {
+            BestVarForVal b;
+            b.pos = (unsigned int)i;
+            b.domsize = s;
+            best[v] = b;
+          }
         }
       }
     }
@@ -208,6 +229,24 @@ namespace Gecode { namespace Int { namespace Distinct {
     double getLiangUpdate(int val, unsigned int idx,
                           unsigned int varSize) const {
       return liangUpdate[val] / getLiangBaiFactor(idx, varSize-1);
+    }
+    // TODO: Renaming et commentaire
+    void getBestPosValDens(int& pos, int& val, double& dens) const {
+      pos = -1;
+      dens = 0;
+      for (int v=best.getMin(); v<=best.getMax(); v++) {
+        if (best[v].pos != -1) {
+          double mU = getMincUpdate(v, best[v].domsize);
+          double lU = ::sqrt(
+            getLiangUpdate(v, (unsigned int)best[v].pos, best[v].domsize));
+          double _dens = std::min(mU,lU);
+          if (_dens > dens) {
+            pos = best[v].pos;
+            val = v;
+            dens = _dens;
+          }
+        }
+      }
     }
   };
 
@@ -270,91 +309,107 @@ namespace Gecode { namespace Int { namespace Distinct {
   template<class View>
   void cbsdistinct(Space& home, unsigned int prop_id, const ViewArray<View>& x,
                   SolnDistribution* dist) {
-    assert(!x.assigned());
-    {
-      bool compute = false;
-      for (int i=0; i<x.size(); i++) {
-        if (!x[i].assigned() && dist->compute(x[i].id())) {
-          compute = true;
-          break;
-        }
-      }
-      if (!compute) return;
+
+    int minVal = x[0].min();
+    int maxVal = x[0].max();
+    for (int i=1; i<x.size(); i++) {
+      if (x[i].assigned()) continue;
+      minVal = std::min(x[i].min(), minVal);
+      maxVal = std::max(x[i].max(), maxVal);
     }
 
-    Region r(home);
-    ViewArray<View> viewArray(r,x);
+    ValToUpdate valToUpdate(x, minVal, maxVal);
+    int pos; int val; double dens;
+    valToUpdate.getBestPosValDens(pos,val,dens);
+    assert(pos != -1 && dens != 0);
+    dist->setMarginalDistribution(prop_id, x[pos].id(), val, dens);
 
-    // We sort the variables by their domain size. Liang & Bai gives a tighter
-    // bound this way
-    QSComparator<View> comp;
-    Support::quicksort(&viewArray[0],viewArray.size(),comp);
-
-    // Minc and Brégman and Liang and Bai upper bound.
-    UB ub; ub.minc=1; ub.liangBai=1;
-    for (int i=0; i<viewArray.size(); i++) {
-      ub.minc *= getMincfactor(viewArray[i].size());
-      ub.liangBai *= getLiangBaiFactor(i,viewArray[i].size());
-    }
-
-    dist->setSupportSize(prop_id, std::min(ub.minc, ::sqrt(ub.liangBai)));
-
-    // Span from the minimum to the maximum value of the union of all
-    // variable domains
-    int minVal = viewArray[0].min();
-    int maxVal = viewArray[0].max();
-    for (int i=1; i<viewArray.size(); i++) {
-      if (viewArray[i].assigned()) continue;
-      minVal = std::min(viewArray[i].min(), minVal);
-      maxVal = std::max(viewArray[i].max(), maxVal);
-    }
-
-//    ValToVar valToVar(viewArray,minVal,maxVal);
-    ValToUpdate valToUpdate(viewArray, minVal, maxVal);
-    SolCounts solcounts(minVal,maxVal);
-
-    std::vector<Record> backup;
-    backup.reserve((size_t)(maxVal-minVal+1));
-    for (int i = 0; i < viewArray.size(); i++) {
-      if (viewArray[i].assigned()) continue;
-      if (!dist->compute(viewArray[i].id())) continue;
-
-      if (i == 0 || !comp(viewArray[i], viewArray[i - 1], true)) {
-        backup.resize(0);
-        // Normalization constant for keeping densities values between 0 and 1
-        double normalization = 0;
-        // We calculate the density for every value assignment for the variable
-        for (ViewValues<View> val(viewArray[i]); val(); ++val) {
-          UB localUB = ub;
-          int v = val.val(); unsigned int s = viewArray[i].size();
-          localUB.minc *= valToUpdate.getMincUpdate(v,s);
-          localUB.liangBai *= valToUpdate.getLiangUpdate(v,i,s);
-          double lowerUB = std::min(localUB.minc, ::sqrt(localUB.liangBai));
-          solcounts(val.val()) = lowerUB;
-          normalization += lowerUB;
-        }
-
-        // Normalization
-        for (ViewValues<View> val(viewArray[i]); val(); ++val) {
-          Record r;
-          r.val = viewArray[i].baseval(val.val());
-          r.dens = solcounts(val.val()) / normalization;
-          double inf = std::numeric_limits<double>::infinity();
-          if (r.dens == -inf || r.dens == inf)
-            throw Int::OutOfLimits("Int::Distinct::cbsdistinct");
-          dist->setMarginalDistribution(prop_id, viewArray[i].id(), r.val,
-                                        r.dens);
-          backup.push_back(r);
-        }
-      } else {
-        for (int j=0; j<(int)backup.size(); j++) {
-          dist->setMarginalDistribution(prop_id,
-                                        viewArray[i].id(),
-                                        backup[j].val,
-                                        backup[j].dens);
-        }
-      }
-    }
+    return;
+//    assert(!x.assigned());
+//    {
+//      bool compute = false;
+//      for (int i=0; i<x.size(); i++) {
+//        if (!x[i].assigned() && dist->compute(x[i].id())) {
+//          compute = true;
+//          break;
+//        }
+//      }
+//      if (!compute) return;
+//    }
+//
+//    Region r(home);
+//    ViewArray<View> viewArray(r,x);
+//
+//    // We sort the variables by their domain size. Liang & Bai gives a tighter
+//    // bound this way
+//    QSComparator<View> comp;
+//    Support::quicksort(&viewArray[0],viewArray.size(),comp);
+//
+//    // Minc and Brégman and Liang and Bai upper bound.
+//    UB ub; ub.minc=1; ub.liangBai=1;
+//    for (int i=0; i<viewArray.size(); i++) {
+//      ub.minc *= getMincfactor(viewArray[i].size());
+//      ub.liangBai *= getLiangBaiFactor(i,viewArray[i].size());
+//    }
+//
+//    dist->setSupportSize(prop_id, std::min(ub.minc, ::sqrt(ub.liangBai)));
+//
+//    // Span from the minimum to the maximum value of the union of all
+//    // variable domains
+//    int minVal = viewArray[0].min();
+//    int maxVal = viewArray[0].max();
+//    for (int i=1; i<viewArray.size(); i++) {
+//      if (viewArray[i].assigned()) continue;
+//      minVal = std::min(viewArray[i].min(), minVal);
+//      maxVal = std::max(viewArray[i].max(), maxVal);
+//    }
+//
+////    ValToVar valToVar(viewArray,minVal,maxVal);
+//    ValToUpdate valToUpdate(viewArray, minVal, maxVal);
+//    SolCounts solcounts(minVal,maxVal);
+//
+//    std::vector<Record> backup;
+//    backup.reserve((size_t)(maxVal-minVal+1));
+//    for (int i = 0; i < viewArray.size(); i++) {
+//      if (viewArray[i].assigned()) continue;
+//      if (!dist->compute(viewArray[i].id())) continue;
+//
+//      if (i == 0 || !comp(viewArray[i], viewArray[i - 1], true)) {
+//        backup.resize(0);
+//        // Normalization constant for keeping densities values between 0 and 1
+//        double normalization = 0;
+//        // We calculate the density for every value assignment for the variable
+//        for (ViewValues<View> val(viewArray[i]); val(); ++val) {
+//          UB localUB = ub;
+//          int v = val.val(); unsigned int s = viewArray[i].size();
+//          localUB.minc *= valToUpdate.getMincUpdate(v,s);
+//          localUB.liangBai *= valToUpdate.getLiangUpdate(v,i,s);
+//          double lowerUB = std::min(localUB.minc, ::sqrt(localUB.liangBai));
+//          solcounts(val.val()) = lowerUB;
+//          normalization += lowerUB;
+//        }
+//
+//        // Normalization
+//        for (ViewValues<View> val(viewArray[i]); val(); ++val) {
+//          Record r;
+//          r.val = viewArray[i].baseval(val.val());
+//          r.dens = solcounts(val.val()) / normalization;
+//          double inf = std::numeric_limits<double>::infinity();
+//          if (r.dens == -inf || r.dens == inf)
+//            throw Int::OutOfLimits("Int::Distinct::cbsdistinct");
+//          dist->setMarginalDistribution(prop_id, viewArray[i].id(), r.val,
+//                                        r.dens);
+//          backup.push_back(r);
+//        }
+//      } else {
+//        for (int j=0; j<(int)backup.size(); j++) {
+//          dist->setMarginalDistribution(prop_id,
+//                                        viewArray[i].id(),
+//                                        backup[j].val,
+//                                        backup[j].dens);
+//        }
+//      }
+//    }
 
   }
 

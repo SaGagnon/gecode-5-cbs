@@ -4,11 +4,11 @@
  *     Christian Schulte <schulte@gecode.org>
  *
  *  Copyright:
- *     Christian Schulte, 2016
+ *     Christian Schulte, 2017
  *
  *  Last modified:
- *     $Date: 2016-05-23 22:18:23 +0200 (Mon, 23 May 2016) $ by $Author: schulte $
- *     $Revision: 15073 $
+ *     $Date: 2017-02-28 08:29:39 +0100 (Tue, 28 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15527 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -35,49 +35,21 @@
  *
  */
 
-#include <iostream>
-#include <sstream>
+#include <gecode/float.hh>
 
 namespace Gecode {
 
-  /**
-   * \brief Print execution information
-   * \relates ExecInfo
-   */
-  template<class Char, class Traits>
-  std::basic_ostream<Char,Traits>&
-  operator <<(std::basic_ostream<Char,Traits>& os,
-              const ExecInfo& ei) {
-    std::basic_ostringstream<Char,Traits> s;
-    s.copyfmt(os); s.width(0);
-    switch (ei.what()) {
-    case ExecInfo::PROPAGATOR:
-      s << "propagator(id:" << ei.propagator().id();
-      if (ei.propagator().group().in())
-        s  << ",g:" << ei.propagator().group().id();
-      s << ')';
-      break;
-    case ExecInfo::BRANCHER:
-      s << "brancher(id:" << ei.brancher().id();
-      if (ei.brancher().group().in())
-        s  << ",g:" << ei.brancher().group().id();
-      s << ')';
-      break;
-    case ExecInfo::POST:
-      s << "post(";
-      if (ei.post().in())
-        s << "g:" << ei.post().id();
-      s << ')';
-      break;
-    case ExecInfo::OTHER:
-      s << '-';
-      break;
-    default:
-      GECODE_NEVER;
-    }
-    return os << s.str();
+  FloatCHB::FloatCHB(Home home, const FloatVarArgs& x, FloatBranchMerit bm) {
+    ViewArray<Float::FloatView> y(home,x);
+    CHB::init(home,y,bm);
+  }
+
+  void
+  FloatCHB::init(Home home, const FloatVarArgs& x, FloatBranchMerit bm) {
+    ViewArray<Float::FloatView> y(home,x);
+    CHB::init(home,y,bm);
   }
 
 }
 
-// STATISTICS: kernel-other
+// STATISTICS: float-branch

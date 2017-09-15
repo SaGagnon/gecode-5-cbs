@@ -7,8 +7,8 @@
  *     Christian Schulte, 2012
  *
  *  Last modified:
- *     $Date: 2013-07-23 14:31:03 +0200 (Tue, 23 Jul 2013) $ by $Author: schulte $
- *     $Revision: 13939 $
+ *     $Date: 2017-02-22 04:53:03 +0100 (Wed, 22 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15469 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -35,23 +35,20 @@
  *
  */
 
-#include <gecode/set.hh>
-
 namespace Gecode {
 
-  SetActivity::SetActivity(Home home, const SetVarArgs& x, double d,
-                           SetBranchMerit bm) {
-    ViewArray<Set::SetView> y(home,x);
-    Activity::init(home,y,d,bm);
-  }
+  forceinline
+  FloatAction::FloatAction(void) {}
 
-  void
-  SetActivity::init(Home home, const SetVarArgs& x, double d,
-                    SetBranchMerit bm) {
-    ViewArray<Set::SetView> y(home,x);
-    Activity::init(home,y,d,bm);
+  forceinline
+  FloatAction::FloatAction(const FloatAction& a)
+    : Action(a) {}
+
+  forceinline FloatAction&
+  FloatAction::operator =(const FloatAction& a) {
+    return static_cast<FloatAction&>(Action::operator =(a));
   }
 
 }
 
-// STATISTICS: set-branch
+// STATISTICS: float-branch

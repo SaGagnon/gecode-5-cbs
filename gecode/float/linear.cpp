@@ -9,8 +9,8 @@ o *  Main authors:
  *     Vincent Barichard, 2012
  *
  *  Last modified:
- *     $Date: 2016-05-23 22:18:23 +0200 (Mon, 23 May 2016) $ by $Author: schulte $
- *     $Revision: 15073 $
+ *     $Date: 2017-04-04 16:15:44 +0200 (Tue, 04 Apr 2017) $ by $Author: schulte $
+ *     $Revision: 15627 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -43,7 +43,7 @@ namespace Gecode {
 
   void
   linear(Home home,
-         const FloatVarArgs& x, FloatRelType frt, FloatNum c) {
+         const FloatVarArgs& x, FloatRelType frt, FloatVal c) {
     using namespace Float;
     GECODE_POST;
     Region re(home);
@@ -56,7 +56,7 @@ namespace Gecode {
 
   void
   linear(Home home,
-         const FloatVarArgs& x, FloatRelType frt, FloatNum c, Reify r) {
+         const FloatVarArgs& x, FloatRelType frt, FloatVal c, Reify r) {
     using namespace Float;
     GECODE_POST;
     Region re(home);
@@ -70,7 +70,7 @@ namespace Gecode {
   void
   linear(Home home,
          const FloatValArgs& a, const FloatVarArgs& x, FloatRelType frt,
-         FloatNum c) {
+         FloatVal c) {
     using namespace Float;
     if (a.size() != x.size())
       throw ArgumentSizeMismatch("Float::linear");
@@ -86,7 +86,7 @@ namespace Gecode {
   void
   linear(Home home,
          const FloatValArgs& a, const FloatVarArgs& x, FloatRelType frt,
-         FloatNum c, Reify r) {
+         FloatVal c, Reify r) {
     using namespace Float;
     if (a.size() != x.size())
       throw ArgumentSizeMismatch("Float::linear");

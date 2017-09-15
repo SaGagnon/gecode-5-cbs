@@ -7,8 +7,8 @@
  *     Christian Schulte, 2003
  *
  *  Last modified:
- *     $Date: 2016-06-29 17:28:17 +0200 (Wed, 29 Jun 2016) $ by $Author: schulte $
- *     $Revision: 15137 $
+ *     $Date: 2016-11-08 17:23:24 +0100 (Tue, 08 Nov 2016) $ by $Author: schulte $
+ *     $Revision: 15253 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -243,13 +243,13 @@ namespace Gecode { namespace Int { namespace Count {
   forceinline ExecStatus
   post_false(Home home, ViewArray<VX>& x, VX y) {
     for (int i = x.size(); i--; )
-      GECODE_ES_CHECK(Rel::Nq<VX>::post(home,x[i],y));
+      GECODE_ES_CHECK((Rel::Nq<VX,VX>::post(home,x[i],y)));
     return ES_OK;
   }
   template<class VX>
   forceinline ExecStatus
   post_false(Home home, VX x, VX y) {
-    return Rel::Nq<VX>::post(home,x,y);
+    return Rel::Nq<VX,VX>::post(home,x,y);
   }
 
   template<class VX>

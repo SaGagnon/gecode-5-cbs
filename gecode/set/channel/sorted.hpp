@@ -11,8 +11,8 @@
  *     Gabor Szokoli, 2004
  *
  *  Last modified:
- *     $Date: 2016-06-29 17:28:17 +0200 (Wed, 29 Jun 2016) $ by $Author: schulte $
- *     $Revision: 15137 $
+ *     $Date: 2017-04-01 20:27:10 +0200 (Sat, 01 Apr 2017) $ by $Author: schulte $
+ *     $Revision: 15623 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -188,9 +188,9 @@ namespace Gecode { namespace Set { namespace Channel {
             ++inter;
           }
 
-          int i=xs_size-1;
-          for (int j=to; j>=from;j--,i--) {
-            GECODE_ME_CHECK_MODIFIED(loopFlag, xs[i].eq(home,j));
+          int k=xs_size-1;
+          for (int j=to; j>=from;j--,k--) {
+            GECODE_ME_CHECK_MODIFIED(loopFlag, xs[k].eq(home,j));
           }
         }
       }

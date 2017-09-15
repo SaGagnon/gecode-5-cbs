@@ -7,8 +7,8 @@
  *     Christian Schulte, 2008
  *
  *  Last modified:
- *     $Date: 2016-06-19 22:08:39 +0200 (Sun, 19 Jun 2016) $ by $Author: schulte $
- *     $Revision: 15119 $
+ *     $Date: 2017-03-08 11:58:56 +0100 (Wed, 08 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15562 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -90,7 +90,7 @@ namespace Gecode {
     /// Return a random integer from the interval [0..n)
     unsigned int operator ()(unsigned int n);
     /// Test whether generator has been properly initialized
-    bool initialized(void) const;
+    operator bool(void) const;
   };
 
   forceinline unsigned int
@@ -103,8 +103,8 @@ namespace Gecode {
     IMP* i = static_cast<IMP*>(object());
     return i->rg(n);
   }
-  forceinline bool
-  Rnd::initialized(void) const {
+  forceinline
+  Rnd::operator bool(void) const {
     return object() != NULL;
   }
 

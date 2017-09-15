@@ -11,8 +11,8 @@
  *     Vincent Barichard, 2012
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-04-10 13:21:37 +0200 (Mon, 10 Apr 2017) $ by $Author: schulte $
+ *     $Revision: 15631 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -211,47 +211,6 @@ namespace Gecode { namespace Float { namespace Arithmetic {
     }
 
     return ES_FIX;
-  }
-
-  /*
-   * Absolute consistent square operator
-   *
-   */
-
-  template<class A, class B>
-  forceinline
-  Abs<A,B>::Abs(Home home, A x0, B x1)
-    : MixBinaryPropagator<A,PC_FLOAT_BND,B,PC_FLOAT_BND>(home,x0,x1) {}
-
-  template<class A, class B>
-  ExecStatus
-  Abs<A,B>::post(Home home, A x0, B x1) {
-    (void) new (home) Abs<A,B>(home,x0,x1);
-    return ES_OK;
-  }
-
-  template<class A, class B>
-  forceinline
-  Abs<A,B>::Abs(Space& home, bool share, Abs<A,B>& p)
-    : MixBinaryPropagator<A,PC_FLOAT_BND,B,PC_FLOAT_BND>(home,share,p) {}
-
-  template<class A, class B>
-  Actor*
-  Abs<A,B>::copy(Space& home, bool share) {
-    return new (home) Abs<A,B>(home,share,*this);
-  }
-
-  template<class A, class B>
-  ExecStatus
-  Abs<A,B>::propagate(Space& home, const ModEventDelta&) {
-    GECODE_ME_CHECK(x1.eq(home,abs(x0.val())));
-    if (x0.min() >= 0)
-      GECODE_ME_CHECK(x0.eq(home,FloatVal(x1.min(), x1.max())));
-    else if (x0.max() <= 0)
-      GECODE_ME_CHECK(x0.eq(home,FloatVal(-x1.max(), -x1.min())));
-    else
-      GECODE_ME_CHECK(x0.eq(home,FloatVal(-x1.max(), x1.max())));
-    return (x0.assigned() && x1.assigned()) ? home.ES_SUBSUMED(*this) : ES_FIX;
   }
 
 }}}

@@ -7,8 +7,8 @@
  *     Christian Schulte, 2012
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-02-16 12:11:51 +0100 (Thu, 16 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15434 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -59,7 +59,7 @@ namespace Gecode { namespace Set { namespace Branch {
     case SetValBranch::SEL_RND_EXC:
       return new (home) ValSelCommit<ValSelRnd,ValCommitExc>(home,svb);
     case SetValBranch::SEL_VAL_COMMIT:
-      if (svb.commit() == NULL) {
+      if (!svb.commit()) {
         return new (home)
           ValSelCommit<ValSelFunction<SetView>,ValCommitInc>(home,svb);
       } else {
@@ -91,7 +91,7 @@ namespace Gecode { namespace Set { namespace Branch {
     case SetAssign::SEL_RND_EXC:
       return new (home) ValSelCommit<ValSelRnd,ValCommitExc>(home,sa);
     case SetAssign::SEL_VAL_COMMIT:
-      if (sa.commit() == NULL) {
+      if (!sa.commit()) {
         return new (home)
           ValSelCommit<ValSelFunction<SetView>,ValCommitInc>(home,sa);
       } else {

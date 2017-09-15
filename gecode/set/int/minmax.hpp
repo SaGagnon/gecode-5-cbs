@@ -12,8 +12,8 @@
  *     Gabor Szokoli, 2004
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-04-01 20:27:10 +0200 (Sat, 01 Apr 2017) $ by $Author: schulte $
+ *     $Revision: 15623 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -100,10 +100,12 @@ namespace Gecode { namespace Set { namespace Int {
       for (LubRanges<View> ubr(x0); ubr(); ++ubr, ++size) {}
       Region r(home);
       int* ub = r.alloc<int>(size*2);
-      int i=0;
-      for (LubRanges<View> ubr(x0); ubr(); ++ubr, ++i) {
-        ub[2*i]   = ubr.min();
-        ub[2*i+1] = ubr.max();
+      {
+        int i=0;
+        for (LubRanges<View> ubr(x0); ubr(); ++ubr, ++i) {
+          ub[2*i]   = ubr.min();
+          ub[2*i+1] = ubr.max();
+        }
       }
       unsigned int x0cm = x0.cardMin()-1;
       for (unsigned int i=size; i--;) {

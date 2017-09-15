@@ -7,8 +7,8 @@
  *     Christian Schulte, 2008
  *
  *  Last modified:
- *     $Date: 2016-09-22 16:19:20 +0200 (Thu, 22 Sep 2016) $ by $Author: schulte $
- *     $Revision: 15169 $
+ *     $Date: 2017-03-28 16:18:06 +0200 (Tue, 28 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15620 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -784,7 +784,7 @@ namespace Test {
           }
         // Portfolio-based search using SEBs
         for (unsigned int mt=1; mt<=3; mt += 2)
-          for (unsigned int st=1; st<=2; st++) {
+          for (unsigned int st=1; st<=8; st++) {
             (void) new SEBPBS<HasSolutions>("BAB",true,mt,st);
             (void) new SEBPBS<FailImmediate>("BAB",true,mt,st);
             (void) new SEBPBS<SolveImmediate>("BAB",true,mt,st);

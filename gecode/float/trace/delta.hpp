@@ -7,8 +7,8 @@
  *     Christian Schulte, 2016
  *
  *  Last modified:
- *     $Date: 2016-05-29 09:53:03 +0200 (Sun, 29 May 2016) $ by $Author: tack $
- *     $Revision: 15092 $
+ *     $Date: 2017-03-17 23:04:57 +0100 (Fri, 17 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15597 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -56,4 +56,4 @@ namespace Gecode {
 
 }
 
-// STATISTICS: float-other
+// STATISTICS: float-trace

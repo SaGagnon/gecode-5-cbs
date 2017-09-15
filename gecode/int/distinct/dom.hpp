@@ -7,8 +7,8 @@
  *     Christian Schulte, 2003
  *
  *  Last modified:
- *     $Date: 2011-09-06 14:19:49 +0200 (Tue, 06 Sep 2011) $ by $Author: schulte $
- *     $Revision: 12393 $
+ *     $Date: 2016-11-08 17:23:24 +0100 (Tue, 08 Nov 2016) $ by $Author: schulte $
+ *     $Revision: 15253 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -48,7 +48,7 @@ namespace Gecode { namespace Int { namespace Distinct {
   ExecStatus
   Dom<View>::post(Home home, ViewArray<View>& x) {
     if (x.size() == 2)
-      return Rel::Nq<View>::post(home,x[0],x[1]);
+      return Rel::Nq<View,View>::post(home,x[0],x[1]);
     if (x.size() == 3)
       return TerDom<View>::post(home,x[0],x[1],x[2]);
     if (x.size() > 3) {
@@ -115,7 +115,7 @@ namespace Gecode { namespace Int { namespace Distinct {
     }
 
     if (x.size() == 2)
-      GECODE_REWRITE(*this,Rel::Nq<View>::post(home(*this),x[0],x[1]));
+      GECODE_REWRITE(*this,(Rel::Nq<View,View>::post(home(*this),x[0],x[1])));
     if (x.size() == 3)
       GECODE_REWRITE(*this,TerDom<View>::post(home(*this),x[0],x[1],x[2]));
 

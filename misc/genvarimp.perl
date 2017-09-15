@@ -7,8 +7,8 @@
 #     Christian Schulte, 2007
 #
 #  Last modified:
-#     $Date: 2016-06-29 17:28:17 +0200 (Wed, 29 Jun 2016) $ by $Author: schulte $
-#     $Revision: 15137 $
+#     $Date: 2017-02-21 06:45:56 +0100 (Tue, 21 Feb 2017) $ by $Author: schulte $
+#     $Revision: 15465 $
 #
 #  This file is part of Gecode, the generic constraint
 #  development environment:
@@ -684,7 +684,7 @@ EOF
      */
     void subscribe(Gecode::Space& home, Gecode::Propagator& p, Gecode::PropCond pc, bool assigned, bool schedule);
     /// Subscribe advisor \\a a if \\a assigned is false.
-    void subscribe(Gecode::Space& home, Gecode::Advisor& a, bool assigned);
+    void subscribe(Gecode::Space& home, Gecode::Advisor& a, bool assigned, bool failed);
     /// Notify that variable implementation has been modified with modification event \\a me and delta information \\a d
     Gecode::ModEvent notify(Gecode::Space& home, Gecode::ModEvent me, Gecode::Delta& d);
     /// \\brief Schedule propagator \\a p
@@ -773,8 +773,8 @@ EOF
     $base[$f]::subscribe(home,p,pc,assigned,$me_subscribe[$f],schedule);
   }
   forceinline void
-  $class[$f]::subscribe(Gecode::Space& home, Gecode::Advisor& a, bool assigned) {
-    $base[$f]::subscribe(home,a,assigned);
+  $class[$f]::subscribe(Gecode::Space& home, Gecode::Advisor& a, bool assigned, bool failed) {
+    $base[$f]::subscribe(home,a,assigned,failed);
   }
 
   forceinline void

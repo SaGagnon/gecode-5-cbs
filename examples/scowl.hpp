@@ -4,8 +4,8 @@
  *     Christian Schulte <schulte@gecode.org>
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-03-04 01:49:55 +0100 (Sat, 04 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15552 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -13503,7 +13503,7 @@ Dictionary::init(const char* fn) {
     char* c = chunk;
     for (int l=max_len+1; l--; ) {
       s_words[l] = c;
-      for (int i=n_words[l]; i--; ) {
+      for (int i=0; i<n_words[l]; i++) {
         for (int j=0; j<l; j++)
           *c++ = ::s_words[l][i][j];
         *c++ = 0;

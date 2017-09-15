@@ -7,8 +7,8 @@
  *     Vincent Barichard, 2012
  *
  *  Last modified:
- *     $Date: 2012-04-02 08:21:06 +0200 (Mon, 02 Apr 2012) $ by $Author: tack $
- *     $Revision: 12685 $
+ *     $Date: 2017-04-10 13:21:37 +0200 (Mon, 10 Apr 2017) $ by $Author: schulte $
+ *     $Revision: 15631 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -37,8 +37,6 @@
 
 #ifndef __GECODE_FLOAT_TRANSCENDENTAL_HH__
 #define __GECODE_FLOAT_TRANSCENDENTAL_HH__
-
-#ifdef GECODE_HAS_MPFR
 
 #include <gecode/float.hh>
 
@@ -108,7 +106,6 @@ namespace Gecode { namespace Float { namespace Transcendental {
 }}}
 
 #include <gecode/float/transcendental/exp-log.hpp>
-#endif
 
 #endif
 

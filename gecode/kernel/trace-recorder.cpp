@@ -4,11 +4,11 @@
  *     Christian Schulte <schulte@gecode.org>
  *
  *  Copyright:
- *     Christian Schulte, 2012
+ *     Christian Schulte, 2017
  *
  *  Last modified:
- *     $Date: 2013-07-23 14:31:03 +0200 (Tue, 23 Jul 2013) $ by $Author: schulte $
- *     $Revision: 13939 $
+ *     $Date: 2017-03-17 23:04:57 +0100 (Fri, 17 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15597 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -35,23 +35,38 @@
  *
  */
 
-#include <gecode/float.hh>
+#include <gecode/kernel.hh>
 
 namespace Gecode {
 
-  FloatActivity::FloatActivity(Home home, const FloatVarArgs& x, double d,
-                               FloatBranchMerit bm) {
-    ViewArray<Float::FloatView> y(home,x);
-    Activity::init(home,y,d,bm);
+  Propagator*
+  TraceRecorder::copy(Space& home, bool share) {
+    return new (home) TraceRecorder(home, share, *this);
+  }
+
+  size_t
+  TraceRecorder::dispose(Space& home) {
+    home.ignore(*this, AP_DISPOSE);
+    home.ignore(*this, AP_TRACE);
+    tf.~TraceFilter();
+    (void) Propagator::dispose(home);
+    return sizeof(*this);
+  }
+
+  PropCost
+  TraceRecorder::cost(const Space&, const ModEventDelta&) const {
+    return PropCost::record();
   }
 
   void
-  FloatActivity::init(Home home, const FloatVarArgs& x, double d,
-                      FloatBranchMerit bm) {
-    ViewArray<Float::FloatView> y(home,x);
-    Activity::init(home,y,d,bm);
+  TraceRecorder::reschedule(Space&) {
+  }
+
+  ExecStatus
+  TraceRecorder::propagate(Space&, const ModEventDelta&) {
+    return ES_FIX;
   }
 
 }
 
-// STATISTICS: float-branch
+// STATISTICS: kernel-trace

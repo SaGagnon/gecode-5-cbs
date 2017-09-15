@@ -7,8 +7,8 @@
  *     Christian Schulte, 2016
  *
  *  Last modified:
- *     $Date: 2016-05-23 22:18:23 +0200 (Mon, 23 May 2016) $ by $Author: schulte $
- *     $Revision: 15073 $
+ *     $Date: 2017-04-01 20:27:10 +0200 (Sat, 01 Apr 2017) $ by $Author: schulte $
+ *     $Revision: 15623 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -41,6 +41,26 @@ namespace Gecode {
 
   Support::Mutex TracerBase::m;
 
+
+  StdTracer::StdTracer(std::ostream& os0) : os(os0) {}
+
+  void
+  StdTracer::propagate(const Space&,
+                       const PropagateTraceInfo& pti) {
+    os << "trace::" << pti << std::endl;
+  }
+
+  void
+  StdTracer::commit(const Space& home,
+                    const CommitTraceInfo& cti) {
+    os << "trace::" << cti << std::endl
+       << '\t';
+    cti.brancher().print(home, cti.choice(), cti.alternative(), os);
+    os << std::endl;
+  }
+
+  StdTracer StdTracer::def;
+
 }
 
-// STATISTICS: kernel-other
+// STATISTICS: kernel-trace

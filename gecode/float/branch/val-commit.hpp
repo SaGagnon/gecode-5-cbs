@@ -11,8 +11,8 @@
  *     Vincent Barichard, 2012
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-02-16 12:11:51 +0100 (Thu, 16 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15434 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -42,7 +42,7 @@
 namespace Gecode { namespace Float { namespace Branch {
 
   forceinline
-  ValCommitLqGq::ValCommitLqGq(Space& home, const ValBranch& vb)
+  ValCommitLqGq::ValCommitLqGq(Space& home, const ValBranch<Var>& vb)
     : ValCommit<FloatView,FloatVal>(home,vb) {}
   forceinline
   ValCommitLqGq::ValCommitLqGq(Space& home, bool shared, ValCommitLqGq& vc)

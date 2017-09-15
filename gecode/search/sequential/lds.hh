@@ -7,8 +7,8 @@
  *     Christian Schulte, 2004, 2016
  *
  *  Last modified:
- *     $Date: 2016-10-25 12:52:26 +0200 (Tue, 25 Oct 2016) $ by $Author: schulte $
- *     $Revision: 15233 $
+ *     $Date: 2017-03-01 06:50:42 +0100 (Wed, 01 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15542 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -269,7 +269,7 @@ namespace Gecode { namespace Search { namespace Sequential {
             Space* cc = cur->clone();
             Node sn(cc,ch,d_a-1);
             ds.push(sn);
-            stack_depth(ds.entries());
+            stack_depth(static_cast<unsigned long int>(ds.entries()));
             cur->commit(*ch,d_a);
             d -= d_a;
           } else {

@@ -7,8 +7,8 @@
  *     Christian Schulte, 2009
  *
  *  Last modified:
- *     $Date: 2016-05-23 22:18:23 +0200 (Mon, 23 May 2016) $ by $Author: schulte $
- *     $Revision: 15073 $
+ *     $Date: 2017-02-16 12:11:51 +0100 (Thu, 16 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15434 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -41,13 +41,13 @@
 namespace Gecode {
 
   void
-  wait(Home home, SetVar x, void (*c)(Space& home)) {
+  wait(Home home, SetVar x, std::function<void(Space& home)> c) {
     GECODE_POST;
     GECODE_ES_FAIL(Kernel::UnaryWait<Set::SetView>::post(home,x,c));
   }
 
   void
-  wait(Home home, const SetVarArgs& x, void (*c)(Space& home)) {
+  wait(Home home, const SetVarArgs& x, std::function<void(Space& home)> c) {
     GECODE_POST;
     ViewArray<Set::SetView> xv(home,x);
     GECODE_ES_FAIL(Kernel::NaryWait<Set::SetView>::post(home,xv,c));

@@ -11,8 +11,8 @@
  *     Christian Schulte, 2004
  *
  *  Last modified:
- *     $Date: 2016-05-23 22:18:23 +0200 (Mon, 23 May 2016) $ by $Author: schulte $
- *     $Revision: 15073 $
+ *     $Date: 2017-03-10 10:15:56 +0100 (Fri, 10 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15566 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -70,6 +70,13 @@ namespace Gecode {
   cardinality(Home home, SetVar s, IntVar x) {
     GECODE_POST;
     GECODE_ES_FAIL(Set::Int::Card<Set::SetView>::post(home,s, x));
+  }
+
+  void
+  cardinality(Home home, SetVar s, IntVar x, Reify r) {
+    IntVar y(home, 0, static_cast<int>(Set::Limits::card));
+    rel(home, x, IRT_EQ, y, r);
+    cardinality(home, s, y);
   }
 
 }

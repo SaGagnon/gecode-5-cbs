@@ -4,11 +4,11 @@
  *     Christian Schulte <schulte@gecode.org>
  *
  *  Copyright:
- *     Christian Schulte, 2012
+ *     Christian Schulte, 2017
  *
  *  Last modified:
- *     $Date: 2013-07-23 14:31:03 +0200 (Tue, 23 Jul 2013) $ by $Author: schulte $
- *     $Revision: 13939 $
+ *     $Date: 2017-02-28 08:29:39 +0100 (Tue, 28 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15527 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -35,36 +35,21 @@
  *
  */
 
-#include <gecode/int.hh>
+#include <gecode/set.hh>
 
 namespace Gecode {
 
-  IntActivity::IntActivity(Home home, const IntVarArgs& x, double d,
-                           IntBranchMerit bm) {
-    ViewArray<Int::IntView> y(home,x);
-    Activity::init(home,y,d,bm);
-  }
-
-  IntActivity::IntActivity(Home home, const BoolVarArgs& x, double d,
-                           BoolBranchMerit bm) {
-    ViewArray<Int::BoolView> y(home,x);
-    Activity::init(home,y,d,bm);
+  SetCHB::SetCHB(Home home, const SetVarArgs& x, SetBranchMerit bm) {
+    ViewArray<Set::SetView> y(home,x);
+    CHB::init(home,y,bm);
   }
 
   void
-  IntActivity::init(Home home, const IntVarArgs& x, double d,
-                    IntBranchMerit bm) {
-    ViewArray<Int::IntView> y(home,x);
-    Activity::init(home,y,d,bm);
-  }
-
-  void
-  IntActivity::init(Home home, const BoolVarArgs& x, double d,
-                    BoolBranchMerit bm) {
-    ViewArray<Int::BoolView> y(home,x);
-    Activity::init(home,y,d,bm);
+  SetCHB::init(Home home, const SetVarArgs& x, SetBranchMerit bm) {
+    ViewArray<Set::SetView> y(home,x);
+    CHB::init(home,y,bm);
   }
 
 }
 
-// STATISTICS: int-branch
+// STATISTICS: set-branch

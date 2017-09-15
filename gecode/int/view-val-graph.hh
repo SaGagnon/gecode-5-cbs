@@ -9,8 +9,8 @@
  *     Guido Tack, 2004
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-03-08 11:58:56 +0100 (Wed, 08 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15562 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -319,7 +319,7 @@ namespace Gecode { namespace Int { namespace ViewValGraph {
     /// Construct graph as not yet initialized
     Graph(void);
     /// Test whether graph has been initialized
-    bool initialized(void) const;
+    operator bool(void) const;
     /// Purge graph if necessary (reset information to avoid overflow)
     void purge(void);
   };

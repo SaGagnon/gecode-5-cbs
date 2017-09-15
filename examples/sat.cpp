@@ -9,8 +9,8 @@
  *     Guido Tack, 2008
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-02-16 12:11:51 +0100 (Thu, 16 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15434 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -121,7 +121,7 @@ public:
   Sat(const SatOptions& opt)
     : Script(opt) {
     parseDIMACS(opt.filename.c_str());
-    branch(*this, x, INT_VAR_NONE(), INT_VAL_MIN());
+    branch(*this, x, BOOL_VAR_AFC_MAX(), BOOL_VAL_MIN());
   }
 
   /// Constructor for cloning

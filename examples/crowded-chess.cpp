@@ -9,8 +9,8 @@
  *     Mikael Lagerkvist, 2005
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-02-16 12:11:51 +0100 (Thu, 16 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15434 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -92,8 +92,7 @@ namespace {
       // Forced bishop placement from crowded chess model
       rel(*this, kb(n-1,   0), IRT_EQ, 1);
       rel(*this, kb(n-1, n-1), IRT_EQ, 1);
-      branch(*this, k,
-             tiebreak(INT_VAR_DEGREE_MAX(),INT_VAR_SIZE_MIN()), INT_VAL_MAX());
+      branch(*this, k, BOOL_VAR_DEGREE_MAX(), BOOL_VAL_MAX());
     }
     Bishops(bool share, Bishops& s) : Space(share,s), n(s.n) {
       k.update(*this, share, s.k);

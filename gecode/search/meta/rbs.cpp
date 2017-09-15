@@ -7,8 +7,8 @@
  *     Guido Tack, 2012
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-03-28 16:18:06 +0200 (Tue, 28 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15620 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -90,7 +90,7 @@ namespace Gecode { namespace Search { namespace Meta {
         // The engine found a solution
         restart = true;
         delete last;
-        last = n->clone();
+        last = n->clone(shared_data);
         return n;
       } else if ( (!complete && !e->stopped()) ||
                   (e->stopped() && stop->enginestopped()) ) {
@@ -135,7 +135,7 @@ namespace Gecode { namespace Search { namespace Meta {
         return;
       }
     }
-    last = b.clone();
+    last = b.clone(shared_data);
     master->constrain(b);
     e->constrain(b);
   }

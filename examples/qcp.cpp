@@ -7,8 +7,8 @@
  *     Christian Schulte, 2015
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-02-16 12:11:51 +0100 (Thu, 16 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15434 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -206,42 +206,37 @@ public:
       }
     }
   }
-  /// Tie-breaking minimum limit function
-  double _tbl_min(double w, double b) const {
-    assert(w >= b);
-    return b + (w - b) * opt.tbf();
-  }
-  /// Tie-breaking minimum limit function
-  static double tbl_min(const Space& home, double w, double b) {
-    return static_cast<const QCP&>(home)._tbl_min(w,b);
-  }
-  /// Tie-breaking maximum limit function
-  double _tbl_max(double w, double b) const {
-    assert(b >= w);
-    return b - (b - w) * opt.tbf();
-  }
-  /// Tie-breaking maximum limit function
-  static double tbl_max(const Space& home, double w, double b) {
-    return static_cast<const QCP&>(home)._tbl_max(w,b);
-  }
   /// Slave function for portfolio search
   virtual bool slave(const MetaInfo& mi) {
     if (mi.type() == MetaInfo::PORTFOLIO) {
+      double tbf = opt.tbf();
       Rnd r(seeds[mi.asset() % n_seeds]);
       switch (opt.branching()) {
       case BRANCH_SIZE:
-        branch(*this, e, tiebreak(INT_VAR_SIZE_MIN(&tbl_min),
-                                  INT_VAR_RND(r)),
-               INT_VAL_MIN());
+        {
+          auto tbl =
+            [tbf] (const Space&, double w, double b) {
+              assert(w >= b);
+              return b + (w - b) * tbf;
+            };
+          branch(*this, e, tiebreak(INT_VAR_SIZE_MIN(tbl),
+                                    INT_VAR_RND(r)),
+                 INT_VAL_MIN());
+        }
         break;
       case BRANCH_AFC_SIZE:
         {
-          IntAFC afc(*this, e, opt.decay());
-          branch(*this, e, tiebreak(INT_VAR_AFC_SIZE_MAX(afc, &tbl_max),
+          auto tbl =
+            [tbf] (const Space&, double w, double b) {
+              assert(b >= w);
+              return b - (b - w) * tbf;
+            };
+          branch(*this, e, tiebreak(INT_VAR_AFC_SIZE_MAX(opt.decay(), tbl),
                                     INT_VAR_RND(r)),
                  INT_VAL_MIN());
-          break;
         }
+        break;
+      default: ;
       }
     }
     return true;

@@ -2,13 +2,15 @@
 /*
  *  Main authors:
  *     Christian Schulte <schulte@gecode.org>
+ *     Vincent Barichard <Vincent.Barichard@univ-angers.fr>
  *
  *  Copyright:
- *     Christian Schulte, 2012
+ *     Christian Schulte, 2002
+ *     Vincent Barichard, 2012
  *
  *  Last modified:
- *     $Date: 2012-09-07 11:29:57 +0200 (Fri, 07 Sep 2012) $ by $Author: schulte $
- *     $Revision: 13061 $
+ *     $Date: 2017-04-10 13:21:37 +0200 (Mon, 10 Apr 2017) $ by $Author: schulte $
+ *     $Revision: 15631 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -35,20 +37,48 @@
  *
  */
 
+#include <gecode/float.hh>
+
+#ifdef GECODE_HAS_MPFR
+
+#include <gecode/float/transcendental.hh>
+
 namespace Gecode {
 
-  forceinline
-  FloatActivity::FloatActivity(void) {}
+  void
+  exp(Home home, FloatVar x0, FloatVar x1) {
+    using namespace Float;
+    GECODE_POST;
+    GECODE_ES_FAIL((Transcendental::Exp<FloatView,FloatView>
+                    ::post(home,x0,x1)));
+  }
 
-  forceinline
-  FloatActivity::FloatActivity(const FloatActivity& a)
-    : Activity(a) {}
+  void
+  log(Home home, FloatVar x0, FloatVar x1) {
+    using namespace Float;
+    GECODE_POST;
+    GECODE_ES_FAIL((Transcendental::Exp<FloatView,FloatView>
+                    ::post(home,x1,x0)));
+  }
 
-  forceinline FloatActivity&
-  FloatActivity::operator =(const FloatActivity& a) {
-    return static_cast<FloatActivity&>(Activity::operator =(a));
+  void
+  log(Home home, FloatNum base, FloatVar x0, FloatVar x1) {
+    using namespace Float;
+    GECODE_POST;
+    GECODE_ES_FAIL((Transcendental::Pow<FloatView,FloatView>
+                    ::post(home,base,x1,x0)));
+  }
+
+  void
+  pow(Home home, FloatNum base, FloatVar x0, FloatVar x1) {
+    using namespace Float;
+    GECODE_POST;
+    GECODE_ES_FAIL((Transcendental::Pow<FloatView,FloatView>
+                    ::post(home,base,x0,x1)));
   }
 
 }
 
-// STATISTICS: float-branch
+#endif
+
+// STATISTICS: float-post

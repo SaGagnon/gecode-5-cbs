@@ -7,8 +7,8 @@
  *     Guido Tack, 2009
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-02-16 12:11:51 +0100 (Thu, 16 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15434 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -239,7 +239,7 @@ public:
     }
 
     // First branch over the precedences
-    branch(*this, b, INT_VAR_AFC_MAX(opt.decay()), INT_VAL_MAX());
+    branch(*this, b, BOOL_VAR_AFC_MAX(opt.decay()), BOOL_VAL_MAX());
     // When the precedences are fixed, simply assign the start times
     assign(*this, _start, INT_ASSIGN_MIN());
     // When the start times are fixed, use the tightest makespan

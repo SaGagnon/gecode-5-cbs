@@ -7,8 +7,8 @@
  *     Christian Schulte, 2011
  *
  *  Last modified:
- *     $Date: 2016-06-17 15:43:08 +0200 (Fri, 17 Jun 2016) $ by $Author: schulte $
- *     $Revision: 15116 $
+ *     $Date: 2017-03-08 11:58:56 +0100 (Wed, 08 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15562 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -321,7 +321,7 @@ namespace Gecode { namespace Int { namespace NValues {
   template<class VY>
   forceinline ExecStatus
   IntBase<VY>::prune_upper(Space& home, Graph& g) {
-    if (!g.initialized()) {
+    if (!g) {
       g.init(home,vs,x);
     } else {
       g.purge();

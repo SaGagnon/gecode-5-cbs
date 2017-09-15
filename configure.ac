@@ -10,9 +10,9 @@ dnl Copyright:
 dnl   Guido Tack, 2004, 2005
 dnl
 dnl Last modified:
-dnl   $Date: 2016-04-19 14:28:31 +0200 (Tue, 19 Apr 2016) $
+dnl   $Date: 2017-03-08 09:44:48 +0100 (Wed, 08 Mar 2017) $
 dnl   by $Author: schulte $
-dnl   $Revision: 14964 $
+dnl   $Revision: 15556 $
 dnl
 dnl This file is part of Gecode, the generic constraint
 dnl development environment:
@@ -39,13 +39,13 @@ dnl WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 dnl
 dnl
 
-AC_REVISION([$Id: configure.ac 14964 2016-04-19 12:28:31Z schulte $])
+AC_REVISION([$Id: configure.ac 15556 2017-03-08 08:44:48Z schulte $])
 AC_PREREQ(2.53)
-AC_INIT(GECODE, 5.0.0, users@gecode.org)
+AC_INIT(GECODE, 5.1.0, users@gecode.org)
 AC_CONFIG_HEADERS([gecode/support/config.hpp])
 AC_CONFIG_SRCDIR(gecode/kernel.hh)
 
-ac_gecode_soversion=43
+ac_gecode_soversion=44
 AC_SUBST(GECODE_SOVERSION, ${ac_gecode_soversion})
 ac_gecode_flatzincversion=1.6
 AC_SUBST(GECODE_FLATZINC_VERSION, ${ac_gecode_flatzincversion})
@@ -105,7 +105,7 @@ gnu)
 intel)
   ;;
 microsoft)
-  AC_CHECK_MSVC_VERSION(1400,2005)
+  AC_CHECK_MSVC_VERSION(1800,2013)
   ;;
 *)
   ;;

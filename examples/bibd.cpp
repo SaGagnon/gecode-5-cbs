@@ -10,8 +10,8 @@
  *     Olof Sivertsson <olsi0767@student.uu.se>
  *
  *  Last modified:
- *     $Date: 2015-03-19 11:41:29 +0100 (Thu, 19 Mar 2015) $ by $Author: tack $
- *     $Revision: 14461 $
+ *     $Date: 2017-02-16 12:11:51 +0100 (Thu, 16 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15434 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -133,7 +133,7 @@ public:
       Symmetries s;
       s << rows_interchange(p);
       s << columns_interchange(p);
-      branch(*this, _p, INT_VAR_NONE(), INT_VAL_MIN(), s);
+      branch(*this, _p, BOOL_VAR_NONE(), BOOL_VAL_MIN(), s);
     } else {
       if (opt.symmetry() == SYMMETRY_LEX) {
         for (int i=1; i<opt.v; i++)
@@ -141,7 +141,7 @@ public:
         for (int j=1; j<opt.b; j++)
           rel(*this, p.col(j-1), IRT_GQ, p.col(j));
       }
-      branch(*this, _p, INT_VAR_NONE(), INT_VAL_MIN());
+      branch(*this, _p, BOOL_VAR_NONE(), BOOL_VAL_MIN());
     }
 
   }

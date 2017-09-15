@@ -9,8 +9,8 @@
  *     Vincent Barichard, 2012
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-03-18 14:56:13 +0100 (Sat, 18 Mar 2017) $ by $Author: vbarichard $
+ *     $Revision: 15599 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -198,7 +198,7 @@ namespace Gecode { namespace Float { namespace Linear {
      */
     bool is_unit = true;
     for (int i=n; i--; )
-      if (t[i].a != 1.0) {
+      if (!(t[i].a == 1.0)) {
         is_unit = false;
         break;
       }

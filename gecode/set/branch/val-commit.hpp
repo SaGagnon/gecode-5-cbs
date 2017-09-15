@@ -13,8 +13,8 @@
  *     Guido Tack, 2004
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-02-16 12:11:51 +0100 (Thu, 16 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15434 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -44,7 +44,7 @@
 namespace Gecode { namespace Set { namespace Branch {
 
   forceinline
-  ValCommitInc::ValCommitInc(Space& home, const ValBranch& vb)
+  ValCommitInc::ValCommitInc(Space& home, const ValBranch<Var>& vb)
     : ValCommit<SetView,int>(home,vb) {}
   forceinline
   ValCommitInc::ValCommitInc(Space& home, bool shared, ValCommitInc& vc)
@@ -68,7 +68,7 @@ namespace Gecode { namespace Set { namespace Branch {
   }
 
   forceinline
-  ValCommitExc::ValCommitExc(Space& home, const ValBranch& vb)
+  ValCommitExc::ValCommitExc(Space& home, const ValBranch<Var>& vb)
     : ValCommit<SetView,int>(home,vb) {}
   forceinline
   ValCommitExc::ValCommitExc(Space& home, bool shared, ValCommitExc& vc)

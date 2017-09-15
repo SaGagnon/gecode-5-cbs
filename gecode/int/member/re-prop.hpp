@@ -7,8 +7,8 @@
  *     Christian Schulte, 2011
  *
  *  Last modified:
- *     $Date: 2016-05-23 22:18:23 +0200 (Mon, 23 May 2016) $ by $Author: schulte $
- *     $Revision: 15073 $
+ *     $Date: 2016-11-08 17:23:24 +0100 (Tue, 08 Nov 2016) $ by $Author: schulte $
+ *     $Revision: 15253 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -134,7 +134,7 @@ namespace Gecode { namespace Int { namespace Member {
         ValSet::Ranges vsr(vs);
         GECODE_ME_CHECK(y.minus_r(home,vsr,false));
         for (int i=x.size(); i--; )
-          GECODE_ES_CHECK(Rel::Nq<View>::post(Home(home),x[i],y));
+          GECODE_ES_CHECK((Rel::Nq<View,View>::post(Home(home),x[i],y)));
       }
       return home.ES_SUBSUMED(*this);
     }

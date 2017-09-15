@@ -7,8 +7,8 @@
  *     Christian Schulte, 2016
  *
  *  Last modified:
- *     $Date: 2016-10-25 12:52:26 +0200 (Tue, 25 Oct 2016) $ by $Author: schulte $
- *     $Revision: 15233 $
+ *     $Date: 2017-03-01 06:50:42 +0100 (Wed, 01 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15542 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -58,7 +58,7 @@ namespace Gecode { namespace Search {
       return;
     Region reg(home);
     // Which variables to assign
-    Support::BitSet<Region> ax(reg, static_cast<int>(x.size()));
+    Support::BitSet<Region> ax(reg, static_cast<unsigned int>(x.size()));
     // Select randomly with probability p to relax value
     for (int i=x.size(); i--; )
       if (r(UINT_MAX) >=

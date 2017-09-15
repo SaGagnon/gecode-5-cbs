@@ -7,8 +7,8 @@
  *     Christian Schulte, 2001
  *
  *  Last modified:
- *     $Date: 2016-05-24 10:22:30 +0200 (Tue, 24 May 2016) $ by $Author: schulte $
- *     $Revision: 15079 $
+ *     $Date: 2017-03-17 23:04:57 +0100 (Fri, 17 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15597 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -68,8 +68,10 @@ public:
       s(le[0]), e(le[1]), n(le[2]), d(le[3]),
       m(le[4]), o(le[5]), r(le[6]), y(le[7]);
 
-    if (opt.trace() != 0)
+    if (opt.trace()) {
       trace(*this, le, opt.trace());
+      trace(*this, opt.trace());
+    }
 
     rel(*this, s, IRT_NQ, 0);
     rel(*this, m, IRT_NQ, 0);

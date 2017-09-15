@@ -7,8 +7,8 @@
  *     Christian Schulte, 2003
  *
  *  Last modified:
- *     $Date: 2011-09-07 16:15:16 +0200 (Wed, 07 Sep 2011) $ by $Author: schulte $
- *     $Revision: 12394 $
+ *     $Date: 2017-03-08 11:58:56 +0100 (Wed, 08 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15562 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -51,7 +51,7 @@ namespace Gecode { namespace Int { namespace Distinct {
   template<class View>
   forceinline bool
   DomCtrl<View>::available(void) {
-    return g.initialized();
+    return g;
   }
 
   template<class View>

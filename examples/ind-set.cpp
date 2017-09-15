@@ -7,8 +7,8 @@
  *     Christian Schulte, 2002
  *
  *  Last modified:
- *     $Date: 2015-03-17 16:09:39 +0100 (Tue, 17 Mar 2015) $ by $Author: schulte $
- *     $Revision: 14447 $
+ *     $Date: 2017-02-16 12:11:51 +0100 (Thu, 16 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15434 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -101,7 +101,7 @@ public:
       rel(*this, v[*e1], BOT_AND, v[*e2], 0);
     }
     linear(*this, v, IRT_EQ, k);
-    branch(*this, v, INT_VAR_NONE(), INT_VAL_MIN());
+    branch(*this, v, BOOL_VAR_NONE(), BOOL_VAL_MIN());
   }
 
   /// Constructor for cloning \a s

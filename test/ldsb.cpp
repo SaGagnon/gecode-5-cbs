@@ -7,8 +7,8 @@
  *     Christopher Mears, 2012
  *
  *  Last modified:
- *     $Date: 2016-05-23 22:18:23 +0200 (Mon, 23 May 2016) $ by $Author: schulte $
- *     $Revision: 15073 $
+ *     $Date: 2017-02-22 04:53:03 +0100 (Wed, 22 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15469 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -1598,8 +1598,8 @@ namespace Test { namespace LDSB {
     }
   };
 
-  /// %Test with activity
-  class Activity1 {
+  /// %Test with action
+  class Action1 {
   public:
     /// Number of variables
     static const int n = 4;
@@ -1613,7 +1613,7 @@ namespace Test { namespace LDSB {
       Symmetries s;
       s << VariableSymmetry(xs);
       s << ValueSymmetry(IntArgs::create(4,0));
-      branch(home, xs, INT_VAR_ACTIVITY_MIN(0.8), INT_VAL_MIN(), s);
+      branch(home, xs, INT_VAR_ACTION_MIN(0.8), INT_VAL_MIN(), s);
     }
     /// Compute list of expected solutions
     static std::vector<IntArgs> expectedSolutions(void) {
@@ -1657,7 +1657,7 @@ namespace Test { namespace LDSB {
 #ifdef GECODE_HAS_SET_VARS
   LDSB<ReflectSym1> reflectsym1("ReflectSym1");
   LDSB<ReflectSym2> reflectsym2("ReflectSym2");
-  LDSB<Activity1> activity1("Activity1");
+  LDSB<Action1> action1("Action1");
 
   LDSBSet<SetVarSym1> setvarsym1("SetVarSym1");
   LDSBSet<SetValSym1> setvalsym1("SetValSym1");

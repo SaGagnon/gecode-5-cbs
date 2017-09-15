@@ -7,8 +7,8 @@
  *     Christian Schulte, 2010
  *
  *  Last modified:
- *     $Date: 2016-05-26 13:44:53 +0200 (Thu, 26 May 2016) $ by $Author: schulte $
- *     $Revision: 15087 $
+ *     $Date: 2017-02-09 10:50:35 +0100 (Thu, 09 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15395 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -272,6 +272,7 @@ public:
   virtual size_t dispose(Space& home) {
     home.ignore(*this,AP_DISPOSE);
     size.~IntSharedArray();
+    (void) Brancher::dispose(home);
     return sizeof(*this);
   }
   /// Check status of brancher, return true if alternatives left

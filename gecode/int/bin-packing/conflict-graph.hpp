@@ -9,8 +9,8 @@
  *     Christian Schulte, 2014
  *
  *  Last modified:
- *     $Date: 2016-09-02 11:28:30 +0200 (Fri, 02 Sep 2016) $ by $Author: schulte $
- *     $Revision: 15160 $
+ *     $Date: 2016-11-08 17:23:24 +0100 (Tue, 08 Nov 2016) $ by $Author: schulte $
+ *     $Revision: 15253 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -237,7 +237,7 @@ namespace Gecode { namespace Int { namespace BinPacking {
       if (max.c > bins)
         return ES_FAILED;
     }
-    return Rel::Nq<IntView>::post(home,b[i],b[j]);
+    return Rel::Nq<IntView,IntView>::post(home,b[i],b[j]);
   }
 
   forceinline ExecStatus

@@ -13,8 +13,8 @@
  *     Guido Tack, 2004
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-02-16 12:11:51 +0100 (Thu, 16 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15434 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -44,7 +44,7 @@
 namespace Gecode { namespace Set { namespace Branch {
 
   forceinline
-  ValSelMin::ValSelMin(Space& home, const ValBranch& vb)
+  ValSelMin::ValSelMin(Space& home, const ValBranch<Var>& vb)
     : ValSel<SetView,int>(home,vb) {}
   forceinline
   ValSelMin::ValSelMin(Space& home, bool shared, ValSelMin& vs)
@@ -56,7 +56,7 @@ namespace Gecode { namespace Set { namespace Branch {
   }
 
   forceinline
-  ValSelMax::ValSelMax(Space& home, const ValBranch& vb)
+  ValSelMax::ValSelMax(Space& home, const ValBranch<Var>& vb)
     : ValSel<SetView,int>(home,vb) {}
   forceinline
   ValSelMax::ValSelMax(Space& home, bool shared, ValSelMax& vs)
@@ -70,7 +70,7 @@ namespace Gecode { namespace Set { namespace Branch {
   }
 
   forceinline
-  ValSelMed::ValSelMed(Space& home, const ValBranch& vb)
+  ValSelMed::ValSelMed(Space& home, const ValBranch<Var>& vb)
     : ValSel<SetView,int>(home,vb) {}
   forceinline
   ValSelMed::ValSelMed(Space& home, bool shared, ValSelMed& vs)
@@ -94,7 +94,7 @@ namespace Gecode { namespace Set { namespace Branch {
   }
 
   forceinline
-  ValSelRnd::ValSelRnd(Space& home, const ValBranch& vb)
+  ValSelRnd::ValSelRnd(Space& home, const ValBranch<Var>& vb)
     : ValSel<SetView,int>(home,vb), r(vb.rnd()) {}
   forceinline
   ValSelRnd::ValSelRnd(Space& home, bool shared, ValSelRnd& vs)

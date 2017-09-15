@@ -7,8 +7,8 @@
  *     Christian Schulte, 2003
  *
  *  Last modified:
- *     $Date: 2016-06-29 17:28:17 +0200 (Wed, 29 Jun 2016) $ by $Author: schulte $
- *     $Revision: 15137 $
+ *     $Date: 2016-11-08 17:23:24 +0100 (Tue, 08 Nov 2016) $ by $Author: schulte $
+ *     $Revision: 15253 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -410,7 +410,7 @@ namespace Gecode { namespace Int { namespace Distinct {
     }
 
     if (y.size() == 2)
-      GECODE_REWRITE(*this,Rel::Nq<View>::post(home(*this),y[0],y[1]));
+      GECODE_REWRITE(*this,(Rel::Nq<View,View>::post(home(*this),y[0],y[1])));
 
     ExecStatus es = prop_bnd<View>(home,x,min_x,max_x);
 
@@ -470,7 +470,7 @@ namespace Gecode { namespace Int { namespace Distinct {
       return home.ES_SUBSUMED(*this);
 
     if (x.size() == 2)
-      GECODE_REWRITE(*this,Rel::Nq<View>::post(home(*this),x[0],x[1]));
+      GECODE_REWRITE(*this,(Rel::Nq<View,View>::post(home(*this),x[0],x[1])));
 
     return es;
   }
@@ -479,7 +479,7 @@ namespace Gecode { namespace Int { namespace Distinct {
   ExecStatus
   Bnd<View>::post(Home home, ViewArray<View>& x){
     if (x.size() == 2)
-      return Rel::Nq<View>::post(home,x[0],x[1]);
+      return Rel::Nq<View,View>::post(home,x[0],x[1]);
     if (x.size() > 2)
       (void) new (home) Bnd<View>(home,x);
     return ES_OK;

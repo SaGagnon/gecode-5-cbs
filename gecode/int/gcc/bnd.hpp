@@ -13,8 +13,8 @@
  *     Guido Tack, 2009
  *
  *  Last modified:
- *     $Date: 2016-06-29 17:28:17 +0200 (Wed, 29 Jun 2016) $ by $Author: schulte $
- *     $Revision: 15137 $
+ *     $Date: 2017-03-08 11:58:56 +0100 (Wed, 08 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15562 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -696,8 +696,8 @@ namespace Gecode { namespace Int { namespace GCC {
     MinIdx<Card> min_idx;
     Support::quicksort<Card, MinIdx<Card> >(&k[0], k.size(), min_idx);
 
-    if (!lps.initialized()) {
-      assert (!ups.initialized());
+    if (!lps) {
+      assert(!ups);
       lps.init(home, k, false);
       ups.init(home, k, true);
     } else if (Card::propagate) {

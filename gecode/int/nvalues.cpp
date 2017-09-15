@@ -7,8 +7,8 @@
  *     Christian Schulte, 2011
  *
  *  Last modified:
- *     $Date: 2016-05-23 22:18:23 +0200 (Mon, 23 May 2016) $ by $Author: schulte $
- *     $Revision: 15073 $
+ *     $Date: 2016-11-08 17:23:24 +0100 (Tue, 08 Nov 2016) $ by $Author: schulte $
+ *     $Revision: 15253 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -114,7 +114,7 @@ namespace Gecode {
     case IRT_NQ:
       {
         IntVar z(home,0,x.size());
-        GECODE_ES_FAIL(Rel::Nq<IntView>::post(home,y,z));
+        GECODE_ES_FAIL((Rel::Nq<IntView,IntView>::post(home,y,z)));
         GECODE_ES_FAIL(NValues::EqInt<IntView>::post(home,xv,z));
       }
       break;
@@ -211,7 +211,7 @@ namespace Gecode {
     case IRT_NQ:
       {
         IntVar z(home,0,2);
-        GECODE_ES_FAIL(Rel::Nq<IntView>::post(home,y,z));
+        GECODE_ES_FAIL((Rel::Nq<IntView,IntView>::post(home,y,z)));
         GECODE_ES_FAIL(NValues::EqBool<IntView>::post(home,xv,z));
       }
       break;

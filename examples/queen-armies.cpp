@@ -7,8 +7,8 @@
  *     Mikael Lagerkvist, 2006
  *
  *  Last modified:
- *     $Date: 2016-05-26 13:44:53 +0200 (Thu, 26 May 2016) $ by $Author: schulte $
- *     $Revision: 15087 $
+ *     $Date: 2017-02-16 12:11:51 +0100 (Thu, 16 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15434 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -113,11 +113,11 @@ public:
     linear(*this, b, IRT_EQ, unknowns);
 
     if (opt.branching() == BRANCH_NAIVE) {
-      branch(*this, w, INT_VAR_NONE(), INT_VAL_MAX());
-      branch(*this, b, INT_VAR_NONE(), INT_VAL_MAX());
+      branch(*this, w, BOOL_VAR_NONE(), BOOL_VAL_MAX());
+      branch(*this, b, BOOL_VAR_NONE(), BOOL_VAL_MAX());
     } else {
       QueenBranch::post(*this);
-      assign(*this, b, INT_ASSIGN_MAX());
+      assign(*this, b, BOOL_ASSIGN_MAX());
     }
   }
   /// Constructor for cloning

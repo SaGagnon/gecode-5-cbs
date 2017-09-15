@@ -7,8 +7,8 @@
  *     Christian Schulte, 2009
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-03-28 16:18:06 +0200 (Tue, 28 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15620 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -65,7 +65,7 @@ namespace Gecode { namespace Search { namespace Parallel {
       }
       delete best;
     }
-    best = b.clone();
+    best = b.clone(false);
     // Announce better solutions
     for (unsigned int i=0; i<workers(); i++)
       worker(i)->better(best);

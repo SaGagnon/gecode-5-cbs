@@ -4,11 +4,11 @@
  *     Christian Schulte <schulte@gecode.org>
  *
  *  Copyright:
- *     Christian Schulte, 2012
+ *     Christian Schulte, 2017
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-02-28 08:29:39 +0100 (Tue, 28 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15527 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -39,9 +39,9 @@
 
 namespace Gecode {
 
-  const Activity Activity::def;
+  const CHB CHB::def;
 
-  Activity::Activity(const Activity& a)
+  CHB::CHB(const CHB& a)
     : storage(a.storage) {
     if (storage != NULL) {
       acquire();
@@ -50,8 +50,8 @@ namespace Gecode {
     }
   }
 
-  Activity&
-  Activity::operator =(const Activity& a) {
+  CHB&
+  CHB::operator =(const CHB& a) {
     if (storage != a.storage) {
       if (storage != NULL) {
         bool done;
@@ -71,7 +71,7 @@ namespace Gecode {
     return *this;
   }
 
-  Activity::~Activity(void) {
+  CHB::~CHB(void) {
     if (storage == NULL)
       return;
     bool done;
@@ -83,37 +83,11 @@ namespace Gecode {
   }
 
   void
-  Activity::update(Space&, bool, Activity& a) {
-    const_cast<Activity&>(a).acquire();
+  CHB::update(Space&, bool, CHB& a) {
+    const_cast<CHB&>(a).acquire();
     storage = a.storage;
     storage->use_cnt++;
-    const_cast<Activity&>(a).release();
-  }
-
-  void
-  Activity::set(Space&, double a) {
-    acquire();
-    for (int i=storage->n; i--; )
-      storage->a[i] = a;
-    release();
-  }
-
-  void
-  Activity::decay(Space&, double d) {
-    if ((d < 0.0) || (d > 1.0))
-      throw IllegalDecay("Activity");
-    acquire();
-    storage->d = d;
-    release();
-  }
-
-  double
-  Activity::decay(const Space&) const {
-    double d;
-    const_cast<Activity*>(this)->acquire();
-    d = storage->d;
-    const_cast<Activity*>(this)->release();
-    return d;
+    const_cast<CHB&>(a).release();
   }
 
 }

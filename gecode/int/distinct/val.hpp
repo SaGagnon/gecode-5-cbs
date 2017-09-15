@@ -7,8 +7,8 @@
  *     Christian Schulte, 2003
  *
  *  Last modified:
- *     $Date: 2012-09-07 17:31:22 +0200 (Fri, 07 Sep 2012) $ by $Author: schulte $
- *     $Revision: 13068 $
+ *     $Date: 2016-11-08 17:23:24 +0100 (Tue, 08 Nov 2016) $ by $Author: schulte $
+ *     $Revision: 15253 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -187,7 +187,7 @@ namespace Gecode { namespace Int { namespace Distinct {
   ExecStatus
   Val<View>::post(Home home, ViewArray<View>& x) {
     if (x.size() == 2)
-      return Rel::Nq<View>::post(home,x[0],x[1]);
+      return Rel::Nq<View,View>::post(home,x[0],x[1]);
     if (x.size() > 2)
       (void) new (home) Val<View>(home,x);
     return ES_OK;

@@ -9,8 +9,8 @@
  *     Vincent Barichard, 2012
  *
  *  Last modified:
- *     $Date: 2016-06-29 17:28:17 +0200 (Wed, 29 Jun 2016) $ by $Author: schulte $
- *     $Revision: 15137 $
+ *     $Date: 2017-04-04 16:15:44 +0200 (Tue, 04 Apr 2017) $ by $Author: schulte $
+ *     $Revision: 15627 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -81,50 +81,6 @@ namespace Gecode { namespace Float { namespace Linear {
     return sizeof(*this);
   }
 
-
-  /*
-   * Computing bounds
-   *
-   */
-//  template<class View>
-//  void
-//  bounds_p(Rounding& r, ModEventDelta med, ViewArray<View>& x, FloatVal& c, FloatNum& sl, FloatNum& su) {
-//    int n = x.size();
-//    if (FloatView::me(med) == ME_FLOAT_VAL) {
-//      for (int i = n; i--; ) {
-//        if (x[i].assigned()) {
-//          c -= x[i].val(); x[i] = x[--n];
-//        } else {
-//          sl = r.sub_up(sl,x[i].min()); su = r.sub_down(su,x[i].max());
-//        }
-//      }
-//      x.size(n);
-//    } else {
-//      for (int i = n; i--; ) {
-//        sl = r.sub_up(sl,x[i].min()); su = r.sub_down(su,x[i].max());
-//      }
-//    }
-//  }
-//
-//  template<class View>
-//  void
-//  bounds_n(Rounding& r, ModEventDelta med, ViewArray<View>& y, FloatVal& c, FloatNum& sl, FloatNum& su) {
-//    int n = y.size();
-//    if (FloatView::me(med) == ME_FLOAT_VAL) {
-//      for (int i = n; i--; ) {
-//        if (y[i].assigned()) {
-//          c += y[i].val(); y[i] = y[--n];
-//        } else {
-//          sl = r.add_up(sl,y[i].max()); su = r.add_down(su,y[i].min());
-//        }
-//      }
-//      y.size(n);
-//    } else {
-//      for (int i = n; i--; ) {
-//        sl = r.add_up(sl,y[i].max()); su = r.add_down(su,y[i].min());
-//      }
-//    }
-//  }
 
   template<class View>
   void

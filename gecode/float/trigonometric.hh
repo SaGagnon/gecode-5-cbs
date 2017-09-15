@@ -7,8 +7,8 @@
  *     Vincent Barichard, 2012
  *
  *  Last modified:
- *     $Date: 2012-03-27 13:23:23 +0200 (Tue, 27 Mar 2012) $ by $Author: schulte $
- *     $Revision: 12634 $
+ *     $Date: 2017-04-10 13:21:37 +0200 (Mon, 10 Apr 2017) $ by $Author: schulte $
+ *     $Revision: 15631 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -37,7 +37,6 @@
 
 #ifndef __GECODE_FLOAT_TRIGONOMETRIC_HH__
 #define __GECODE_FLOAT_TRIGONOMETRIC_HH__
-#ifdef GECODE_HAS_MPFR
 
 #include <gecode/float.hh>
 
@@ -45,7 +44,6 @@
  * \namespace Gecode::Float::Trigonometric
  * \brief %Trigonometric propagators
  */
-
 namespace Gecode { namespace Float { namespace Trigonometric {
 
   /**
@@ -216,7 +214,7 @@ namespace Gecode { namespace Float { namespace Trigonometric {
 #include <gecode/float/trigonometric/sincos.hpp>
 #include <gecode/float/trigonometric/asinacos.hpp>
 #include <gecode/float/trigonometric/tanatan.hpp>
-#endif
+
 #endif
 
 // STATISTICS: float-prop

@@ -7,8 +7,8 @@
  *     Christian Schulte, 2002
  *
  *  Last modified:
- *     $Date: 2013-05-14 01:34:01 +0200 (Tue, 14 May 2013) $ by $Author: tack $
- *     $Revision: 13635 $
+ *     $Date: 2017-02-21 06:45:56 +0100 (Tue, 21 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15465 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -172,7 +172,7 @@ namespace Gecode { namespace Int {
       fst()->dispose(home,p);
       fst(NULL); holes = 0;
       if (failed)
-        return ME_INT_FAILED;
+        return fail(home);
     }
     IntDelta d;
     return notify(home,ME_INT_VAL,d);
@@ -184,7 +184,7 @@ namespace Gecode { namespace Int {
     ModEvent me = ME_INT_DOM;
     if (range()) {
       if ((m == dom.min()) && (m == dom.max()))
-        return ME_INT_FAILED;
+        return fail(home);
       if (m == dom.min()) {
         dom.min(m+1);
         me = assigned() ? ME_INT_VAL : ME_INT_BND;
@@ -354,6 +354,26 @@ namespace Gecode { namespace Int {
   IntVarImp*
   IntVarImp::perform_copy(Space& home, bool share) {
     return new (home) IntVarImp(home,share,*this);
+  }
+
+  /*
+   * Dependencies
+   *
+   */
+  void
+  IntVarImp::subscribe(Space& home, Propagator& p, PropCond pc,
+                       bool schedule) {
+    IntVarImpBase::subscribe(home,p,pc,dom.min()==dom.max(),schedule);
+  }
+
+  void
+  IntVarImp::reschedule(Space& home, Propagator& p, PropCond pc) {
+    IntVarImpBase::reschedule(home,p,pc,dom.min()==dom.max());
+  }
+
+  void
+  IntVarImp::subscribe(Space& home, Advisor& a, bool fail) {
+    IntVarImpBase::subscribe(home,a,dom.min()==dom.max(),fail);
   }
 
 }}

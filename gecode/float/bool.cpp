@@ -4,11 +4,11 @@
  *     Christian Schulte <schulte@gecode.org>
  *
  *  Copyright:
- *     Christian Schulte, 2012
+ *     Christian Schulte, 2016
  *
  *  Last modified:
- *     $Date: 2013-02-18 21:53:58 +0100 (Mon, 18 Feb 2013) $ by $Author: schulte $
- *     $Revision: 13310 $
+ *     $Date: 2016-12-02 13:20:09 +0100 (Fri, 02 Dec 2016) $ by $Author: schulte $
+ *     $Revision: 15304 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -35,20 +35,17 @@
  *
  */
 
+#include <gecode/float/bool.hh>
+
 namespace Gecode {
 
-  forceinline
-  IntActivity::IntActivity(void) {}
-
-  forceinline
-  IntActivity::IntActivity(const IntActivity& a)
-    : Activity(a) {}
-
-  forceinline IntActivity&
-  IntActivity::operator =(const IntActivity& a) {
-    return static_cast<IntActivity&>(Activity::operator =(a));
+  void
+  ite(Home home, BoolVar b, FloatVar x, FloatVar y, FloatVar z) {
+    using namespace Float;
+    GECODE_POST;
+    GECODE_ES_FAIL(Bool::Ite<FloatView>::post(home,b,x,y,z));
   }
 
 }
 
-// STATISTICS: int-branch
+// STATISTICS: float-post

@@ -7,8 +7,8 @@
  *     Christian Schulte, 2012
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-02-16 12:11:51 +0100 (Thu, 16 Feb 2017) $ by $Author: schulte $
+ *     $Revision: 15434 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -39,7 +39,7 @@ namespace Gecode { namespace Int { namespace Branch {
 
   template<class View>
   forceinline
-  ValCommitEq<View>::ValCommitEq(Space& home, const ValBranch& vb)
+  ValCommitEq<View>::ValCommitEq(Space& home, const ValBranch<Var>& vb)
     : ValCommit<View,int>(home,vb) {}
   template<class View>
   forceinline
@@ -68,7 +68,7 @@ namespace Gecode { namespace Int { namespace Branch {
 
   template<class View>
   forceinline
-  ValCommitLq<View>::ValCommitLq(Space& home, const ValBranch& vb)
+  ValCommitLq<View>::ValCommitLq(Space& home, const ValBranch<Var>& vb)
     : ValCommit<View,int>(home,vb) {}
   template<class View>
   forceinline
@@ -97,7 +97,7 @@ namespace Gecode { namespace Int { namespace Branch {
 
   template<class View>
   forceinline
-  ValCommitGq<View>::ValCommitGq(Space& home, const ValBranch& vb)
+  ValCommitGq<View>::ValCommitGq(Space& home, const ValBranch<Var>& vb)
     : ValCommit<View,int>(home,vb) {}
   template<class View>
   forceinline
@@ -126,7 +126,7 @@ namespace Gecode { namespace Int { namespace Branch {
 
   template<class View>
   forceinline
-  ValCommitGr<View>::ValCommitGr(Space& home, const ValBranch& vb)
+  ValCommitGr<View>::ValCommitGr(Space& home, const ValBranch<Var>& vb)
     : ValCommit<View,int>(home,vb) {}
   template<class View>
   forceinline

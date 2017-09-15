@@ -13,8 +13,8 @@
  *     Guido Tack, 2009
  *
  *  Last modified:
- *     $Date: 2016-04-19 17:19:45 +0200 (Tue, 19 Apr 2016) $ by $Author: schulte $
- *     $Revision: 14967 $
+ *     $Date: 2017-03-08 11:58:56 +0100 (Wed, 08 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15562 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -256,7 +256,7 @@ namespace Gecode { namespace Int { namespace GCC {
     /// Mark datstructure as requiring reinitialization
     void reinit(void);
     /// Test whether already initialized
-    bool initialized(void) const;
+    operator bool(void) const;
     //@}
     /// \name Access
     //@{
@@ -298,8 +298,8 @@ namespace Gecode { namespace Int { namespace GCC {
   PartialSum<Card>::PartialSum(void) : sum(NULL), size(-1) {}
 
   template<class Card>
-  forceinline bool
-  PartialSum<Card>::initialized(void) const {
+  forceinline
+  PartialSum<Card>::operator bool(void) const {
     return size != -1;
   }
   template<class Card>

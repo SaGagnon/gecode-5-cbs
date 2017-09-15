@@ -7,8 +7,8 @@
  *     Christian Schulte, 2016
  *
  *  Last modified:
- *     $Date: 2016-05-20 14:23:57 +0200 (Fri, 20 May 2016) $ by $Author: schulte $
- *     $Revision: 15058 $
+ *     $Date: 2017-03-17 23:04:57 +0100 (Fri, 17 Mar 2017) $ by $Author: schulte $
+ *     $Revision: 15597 $
  *
  *  This file is part of Gecode, the generic constraint
  *  development environment:
@@ -123,4 +123,4 @@ namespace Gecode { namespace Int {
 
 }}
 
-// STATISTICS: int-other
+// STATISTICS: int-trace

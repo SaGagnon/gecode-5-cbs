@@ -30,6 +30,10 @@
 #include <limits>
 #include <algorithm>
 
+
+#define VAL_TO_VAR
+//#define BACKUP
+
 namespace Gecode { namespace Int { namespace Distinct {
 
   /**
@@ -78,6 +82,93 @@ namespace Gecode { namespace Int { namespace Distinct {
     double minc;
     double liangBai;
   };
+
+#ifdef VAL_TO_VAR
+  /**
+   * \Brief Function for updating upper bounds given a domain change
+   */
+  forceinline
+  void upperBoundUpdate(UB& ub, int index, int oldDomSize, int newDomSize) {
+    ub.minc *= getMincfactor(newDomSize) / getMincfactor(oldDomSize);
+    ub.liangBai *= getLiangBaiFactor(index,newDomSize) /
+                   getLiangBaiFactor(index,oldDomSize);
+  }
+
+  /**
+   * \brief Maps values to variables
+   *
+   * Used for a faster update of the upper bounds. When we assign a value, we
+   * need to know each variable that is affected by the assignment.
+   */
+  class ValToVar {
+  public:
+    template<class View>
+    ValToVar(const ViewArray<View>& x, int minDomVal, int maxDomVal);
+    ~ValToVar();
+
+    int getNbVarForVal(int val) const;
+    int get(int val, int ith_var) const;
+
+  private:
+    int nbVal() const;
+  private:
+    int *nbVarForVal; // Number of variable for each value
+    int *valVar; // Value to variables
+
+    int minVal;
+    int maxVal;
+    int nb_var;
+  };
+
+  template<class View>
+  ValToVar::ValToVar(const ViewArray<View>& x, int minDomVal, int maxDomVal)
+    : minVal(minDomVal), maxVal(maxDomVal), nb_var(x.size()) {
+
+    nbVarForVal = heap.alloc<int>(nbVal());;
+    for (int i=0; i<nbVal(); i++) nbVarForVal[i] = 0;
+
+    valVar = heap.alloc<int>(nbVal() * nb_var);
+
+    for (int var=0; var<x.size(); var++) {
+      if (x[var].assigned()) continue;
+      for (ViewValues<View> val(x[var]); val(); ++val) {
+        // Current value
+        int v = val.val();
+        // Number of variables for current value
+        int *nbVar = &nbVarForVal[v-minVal];
+
+        int row=(v-minVal); int width=nb_var; int col=*nbVar;
+        valVar[row*width + col] = var;
+
+        (*nbVar)++;
+      }
+    }
+  }
+
+  forceinline
+  ValToVar::~ValToVar() {
+    heap.free<int>(nbVarForVal, nbVal());
+    heap.free<int>(valVar, nb_var*nbVal());
+  }
+
+  forceinline
+  int ValToVar::getNbVarForVal(int val) const {
+    return nbVarForVal[val-minVal];
+  }
+
+  forceinline
+  int ValToVar::get(int val, int ith_var) const {
+    assert(ith_var < getNbVarForVal(val));
+    assert(val - minVal >= 0 && val - minVal <= maxVal);
+    int row=(val-minVal); int width=nb_var; int col=ith_var;
+    return valVar[row*width + col];
+  }
+
+  forceinline
+  int ValToVar::nbVal() const {
+    return maxVal - minVal + 1;
+  }
+#endif
 
   class ValToUpdate {
   private:
@@ -255,7 +346,6 @@ namespace Gecode { namespace Int { namespace Distinct {
   template<class View>
   void cbsdistinct(Space& home, unsigned int prop_id, const ViewArray<View>& x,
                   SolnDistribution* dist, SolnDistribution::Type type) {
-
     if(!computation_to_do(dist,x))
       return;
 
@@ -288,29 +378,53 @@ namespace Gecode { namespace Int { namespace Distinct {
 
       dist->setSupportSize(prop_id, std::min(ub.minc, ::sqrt(ub.liangBai)));
 
+#ifdef VAL_TO_VAR
+      ValToVar valToVar(viewArray,minVal,maxVal);
+#else
       ValToUpdate valToUpdate(viewArray, minVal, maxVal);
+#endif
       SolCounts solcounts(minVal,maxVal);
 
+#ifdef BACKUP
       std::vector<Record> backup;
       backup.reserve(maxVal-minVal+1);
+#endif
       for (int i = 0; i < viewArray.size(); i++) {
         if (viewArray[i].assigned()) continue;
         if (!dist->compute(viewArray[i].id())) continue;
 
+#ifdef VAL_TO_VAR
+        UB varUB = ub;
+        upperBoundUpdate(varUB,i,viewArray[i].size(), 1);
+#endif
+
+#ifdef BACKUP
         auto cant_use_backup = [&]() {
           return i == 0 || !comp(viewArray[i], viewArray[i - 1], true);
         };
 
         if (cant_use_backup()) {
           backup.resize(0);
+#endif
           // Normalization constant for keeping densities values between 0 and 1
           double normalization = 0;
           // We calculate the density for every value assignment for the variable
           for (ViewValues<View> val(viewArray[i]); val(); ++val) {
+#ifdef VAL_TO_VAR
+            UB localUB = varUB;
+            int nbVarAffectedByVal = valToVar.getNbVarForVal(val.val());
+            for (int j=0; j<nbVarAffectedByVal; j++) {
+              int affectedVar = valToVar.get(val.val(), j);
+              if (affectedVar != i)
+                upperBoundUpdate(localUB,affectedVar,viewArray[affectedVar].size(),
+                                 viewArray[affectedVar].size()-1);
+            }
+#else
             UB localUB = ub;
             int v = val.val(); unsigned int s = viewArray[i].size();
             localUB.minc *= valToUpdate.getMincUpdate(v,s);
             localUB.liangBai *= valToUpdate.getLiangUpdate(v,i,s);
+#endif
             double lowerUB = std::min(localUB.minc, ::sqrt(localUB.liangBai));
             solcounts(val.val()) = lowerUB;
             normalization += lowerUB;
@@ -318,6 +432,7 @@ namespace Gecode { namespace Int { namespace Distinct {
 
           // Normalization
           for (ViewValues<View> val(viewArray[i]); val(); ++val) {
+            assert(normalization != 0);
             Record rec{
               viewArray[i].baseval(val.val()),
               solcounts(val.val()) / normalization
@@ -325,14 +440,18 @@ namespace Gecode { namespace Int { namespace Distinct {
             throw_if_inf(rec.dens);
             dist->setMarginalDistribution(prop_id, viewArray[i].id(), rec.val,
                                           rec.dens);
+#ifdef BACKUP
             backup.push_back(rec);
+#endif
           }
+#ifdef BACKUP
         } else {
           for (auto v : backup) {
             dist->setMarginalDistribution(prop_id, viewArray[i].id(), v.val,
                                           v.dens);
           }
         }
+#endif
       }
     }
 

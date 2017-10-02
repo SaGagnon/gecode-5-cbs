@@ -31,8 +31,8 @@
 #include <algorithm>
 
 
-#define VAL_TO_VAR
-//#define BACKUP
+//#define VAL_TO_VAR
+#define BACKUP
 
 namespace Gecode { namespace Int { namespace Distinct {
 

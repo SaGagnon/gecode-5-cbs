@@ -248,9 +248,8 @@ namespace Gecode { namespace Int { namespace Extensional {
    */
   template<class View, class Val, class Degree, class StateIdx>
   forceinline void
-  LayeredGraph<View,Val,Degree,StateIdx>::slndist(Space &home,
-                                                  SolnDistribution* dist,
-                                                  SolnDistribution::Type) const {
+  LayeredGraph<View,Val,Degree,StateIdx>::slndist(Space& home,
+                                                  SlnDist* dist) const {
     if (layers[0].states == NULL)
       const_cast<LayeredGraph<View,Val,Degree,StateIdx>*>(this)
         ->alloc_state(home);
@@ -293,7 +292,7 @@ namespace Gecode { namespace Int { namespace Extensional {
 
     // Number of possible path in the layered graph
     const double n_paths = statesCnt[0][0].o_paths;
-    dist->setSupportSize(id(), n_paths);
+    dist->supportsize(id(), n_paths);
 
   //     DEBUG =================================================================
   //    int max_n_states = 0;
@@ -337,7 +336,7 @@ namespace Gecode { namespace Int { namespace Extensional {
         }
         double dens = (double)count / n_paths;
         assert(n_paths != 0);
-        dist->setMarginalDistribution(id(), l->x.id(), l->x.baseval(s->val), dens);
+        dist->marginaldist(id(), l->x.id(), l->x.baseval(s->val), dens);
   //        std::cout << dens << std::endl;
       }
     }
@@ -345,16 +344,16 @@ namespace Gecode { namespace Int { namespace Extensional {
 
   template<class View, class Val, class Degree, class StateIdx>
   forceinline void
-  LayeredGraph<View,Val,Degree,StateIdx>::slndistsize(SolnDistributionSize* size,
-                                                      unsigned int& domAggr,
-                                                      unsigned int& domAggrB) const {
-    domAggr = 0;
-    domAggrB = 0;
+  LayeredGraph<View,Val,Degree,StateIdx>::slndistsize(SlnDistSize* size,
+                                                      unsigned int& domSum,
+                                                      unsigned int& domSumB) const {
+    domSum = 0;
+    domSumB = 0;
     for (int i=0; i<n; i++) {
       if (!layers[i].x.assigned()) {
-        domAggr += layers[i].x.size();
-        if (size->varInBrancher(layers[i].x.id()))
-          domAggrB += layers[i].x.size();
+        domSum += layers[i].x.size();
+        if (size->inbrancher(layers[i].x.id()))
+          domSumB += layers[i].x.size();
       }
     }
   }

@@ -75,10 +75,9 @@ namespace Gecode { namespace Int { namespace Distinct {
     Val(Space& home, bool share, Val<View>& p);
   public:
     /// Counting base search densities computation for branching
-    virtual void slndist(Space& home, SolnDistribution* dist,
-                         SolnDistribution::Type type) const;
-    virtual void slndistsize(SolnDistributionSize* s, unsigned int& domAggr,
-                             unsigned int& domAggrB) const;
+    virtual void slndist(Space& home, SlnDist* dist) const;
+    virtual void slndistsize(SlnDistSize* s, unsigned int& domSum,
+                             unsigned int& domSumB) const;
     /// Copy propagator during cloning
     virtual Actor*     copy(Space& home, bool share);
     /// Perform propagation
@@ -98,11 +97,11 @@ namespace Gecode { namespace Int { namespace Distinct {
    */
   template<class View>
   void cbsdistinct(Space& home, unsigned int prop_id, const ViewArray<View>& x,
-                  SolnDistribution* dist, SolnDistribution::Type type);
+                   SlnDist* dist);
 
   template<class View>
-  void cbssize(const ViewArray<View>& x, SolnDistributionSize* s,
-              unsigned int& domAggr, unsigned int& domAggrB);
+  void cbssize(const ViewArray<View>& x, SlnDistSize* s,
+              unsigned int& domSum, unsigned int& domSumB);
 
 
   /**
@@ -165,10 +164,9 @@ namespace Gecode { namespace Int { namespace Distinct {
     Bnd(Space& home, bool share, Bnd<View>& p);
   public:
     /// Counting base search densities computation for branching
-    virtual void slndist(Space& home, SolnDistribution* dist,
-                         SolnDistribution::Type type) const;
-    virtual void slndistsize(SolnDistributionSize* s, unsigned int& domAggr,
-                             unsigned int& domAggrB) const;
+    virtual void slndist(Space& home, SlnDist* dist) const;
+    virtual void slndistsize(SlnDistSize* s, unsigned int& domSum,
+                             unsigned int& domSumB) const;
     /// Post propagator for view array \a x
     static ExecStatus post(Home home, ViewArray<View>& x);
     /// Perform propagation
@@ -269,7 +267,7 @@ namespace Gecode { namespace Int { namespace Distinct {
    * propagation and only then uses domain consistent propagation.
    *
    * The algorithm is taken from:
-   *    Jean-Charles Régin, A filtering algorithm for constraints
+   *    Jean-Charles Rï¿½gin, A filtering algorithm for constraints
    *    of difference in CSPs, Proceedings of the Twelfth National
    *    Conference on Artificial Intelligence, pages 362--367.
    *    Seattle, WA, USA, 1994.
@@ -289,11 +287,10 @@ namespace Gecode { namespace Int { namespace Distinct {
     Dom(Home home, ViewArray<View>& x);
   public:
     /// Counting base search densities computation for branching
-    virtual void slndist(Space& home, SolnDistribution* dist,
-                         SolnDistribution::Type type) const;
+    virtual void slndist(Space& home, SlnDist* dist) const;
     /// TODO: Comment
-    virtual void slndistsize(SolnDistributionSize* s, unsigned int& domAggr,
-                             unsigned int& domAggrB) const;
+    virtual void slndistsize(SlnDistSize* s, unsigned int& domSum,
+                             unsigned int& domSumB) const;
     /// Perform propagation
     virtual ExecStatus propagate(Space& home, const ModEventDelta& med);
     /**

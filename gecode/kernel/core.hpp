@@ -1031,7 +1031,7 @@ namespace Gecode {
   /**
    * \brief Interface class to set densities for each variable and value.
    */
-  class SolnDistribution {
+  class SlnDist {
   public:
     //TODO: Name
     enum Type {
@@ -1040,16 +1040,17 @@ namespace Gecode {
     };
   public:
     virtual bool compute(unsigned int var_id) const = 0;
-    virtual void setMarginalDistribution(unsigned int prop_id,
-                                         unsigned int var_id, int val,
-                                         double density) = 0;
-    virtual void setSupportSize(unsigned int prop_id, double count) = 0;
+    virtual void marginaldist(unsigned int prop_id,
+                              unsigned int var_id, int val,
+                              double density) = 0;
+    virtual void supportsize(unsigned int prop_id, double count) = 0;
+    virtual Type type() const = 0;
   };
 
   // TODO: Briefing et meilleur nom
-  class SolnDistributionSize {
+  class SlnDistSize {
   public:
-    virtual bool varInBrancher(unsigned int var_id) const = 0;
+    virtual bool inbrancher(unsigned int var_id) const = 0;
   };
 
   /**
@@ -1248,11 +1249,10 @@ namespace Gecode {
     /// Return the accumlated failure count
     double afc(void) const;
     /// Compute solution distribution for the given propagator
-    virtual void slndist(Space& home, SolnDistribution* dist,
-                         SolnDistribution::Type type = SolnDistribution::ALL) const;
+    virtual void slndist(Space& home, SlnDist* dist) const;
     /// TODO: Comment
-    virtual void slndistsize(SolnDistributionSize* s, unsigned int& domAggr,
-                             unsigned int& domAggrB) const;
+    virtual void slndistsize(SlnDistSize* s, unsigned int& domSum,
+                             unsigned int& domSumB) const;
     //@}
     /// \name Id and group support
     //@{
@@ -3628,14 +3628,14 @@ namespace Gecode {
   }
 
   forceinline void
-  Propagator::slndist(Space&, SolnDistribution*, SolnDistribution::Type) const {}
+  Propagator::slndist(Space&, SlnDist*) const {}
 
 
   forceinline void
-  Propagator::slndistsize(SolnDistributionSize*, unsigned int& domAggr,
-                          unsigned int& domAggrB) const {
-    domAggr = 0;
-    domAggrB = 0;
+  Propagator::slndistsize(SlnDistSize*, unsigned int& domSum,
+                          unsigned int& domSumB) const {
+    domSum = 0;
+    domSumB = 0;
   }
 
   forceinline unsigned int

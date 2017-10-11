@@ -317,7 +317,7 @@ namespace Gecode { namespace Int { namespace Distinct {
   struct Record { int val; double dens; };
 
   template<class View>
-  bool computation_to_do(SolnDistribution* dist, const ViewArray<View>& x) {
+  bool computation_to_do(SlnDist* dist, const ViewArray<View>& x) {
     auto it = std::find_if(x.begin(), x.end(),
                            [&](const View& v) {
                              return !v.assigned() && dist->compute(v.id());
@@ -345,20 +345,20 @@ namespace Gecode { namespace Int { namespace Distinct {
 
   template<class View>
   void cbsdistinct(Space& home, unsigned int prop_id, const ViewArray<View>& x,
-                  SolnDistribution* dist, SolnDistribution::Type type) {
+                   SlnDist* dist) {
     if(!computation_to_do(dist,x))
       return;
 
     int minVal, maxVal;
     min_max_dom(x, minVal, maxVal);
 
-    if (type == SolnDistribution::MAX_PER_PROP) {
+    if (dist->type() == SlnDist::MAX_PER_PROP) {
       ValToUpdate valToUpdate(x, minVal, maxVal);
       int pos; int val; double dens;
       valToUpdate.getBestPosValDens(pos, val, dens);
       assert(pos != -1 && dens != 0);
-      dist->setMarginalDistribution(prop_id, x[pos].id(), val, dens);
-    } else if (type == SolnDistribution::ALL) {
+      dist->marginaldist(prop_id, x[pos].id(), val, dens);
+    } else if (dist->type() == SlnDist::ALL) {
       assert(!x.assigned());
 
       Region r(home);
@@ -376,7 +376,7 @@ namespace Gecode { namespace Int { namespace Distinct {
         ub.liangBai *= getLiangBaiFactor(i,viewArray[i].size());
       }
 
-      dist->setSupportSize(prop_id, std::min(ub.minc, ::sqrt(ub.liangBai)));
+      dist->supportsize(prop_id, std::min(ub.minc, ::sqrt(ub.liangBai)));
 
 #ifdef VAL_TO_VAR
       ValToVar valToVar(viewArray,minVal,maxVal);
@@ -438,7 +438,7 @@ namespace Gecode { namespace Int { namespace Distinct {
               solcounts(val.val()) / normalization
             };
             throw_if_inf(rec.dens);
-            dist->setMarginalDistribution(prop_id, viewArray[i].id(), rec.val,
+            dist->marginaldist(prop_id, viewArray[i].id(), rec.val,
                                           rec.dens);
 #ifdef BACKUP
             backup.push_back(rec);
@@ -447,7 +447,7 @@ namespace Gecode { namespace Int { namespace Distinct {
 #ifdef BACKUP
         } else {
           for (auto v : backup) {
-            dist->setMarginalDistribution(prop_id, viewArray[i].id(), v.val,
+            dist->marginaldist(prop_id, viewArray[i].id(), v.val,
                                           v.dens);
           }
         }
@@ -458,15 +458,15 @@ namespace Gecode { namespace Int { namespace Distinct {
   }
 
   template<class View>
-  void cbssize(const ViewArray<View>& x, SolnDistributionSize* s,
-              unsigned int& domAggr, unsigned int& domAggrB) {
-    domAggr = 0;
-    domAggrB = 0;
+  void cbssize(const ViewArray<View>& x, SlnDistSize* s,
+               unsigned int& domSum, unsigned int& domSumB) {
+    domSum = 0;
+    domSumB = 0;
     for (const auto& v : x) {
       if (!v.assigned()) {
-        domAggr += v.size();
-        if (s->varInBrancher(v.id()))
-          domAggrB += v.size();
+        domSum += v.size();
+        if (s->inbrancher(v.id()))
+          domSumB += v.size();
       }
     }
   }

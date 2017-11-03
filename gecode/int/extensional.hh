@@ -201,10 +201,10 @@ namespace Gecode { namespace Int { namespace Extensional {
                  LayeredGraph<View,Val,Degree,StateIdx>& p);
   public:
     /// Counting base search densities computation for branching
-    virtual void slndist(Space& home, SlnDist* dist) const;
+    virtual void solndistrib(Space& home, SolnDistrib* dist) const;
     /// TODO: Comment
-    virtual void slndistsize(SlnDistSize* size, unsigned int& domSum,
-                            unsigned int& domSumB) const;
+    virtual void solndistribsize(SolnDistribSize* size, unsigned int& domsum,
+                            unsigned int& domsum_b) const;
     /// Constructor for posting
     template<class Var>
     LayeredGraph(Home home,

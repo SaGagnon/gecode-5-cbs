@@ -592,10 +592,10 @@ namespace Gecode { namespace Int { namespace Linear {
     /// Create copy during cloning
     virtual Actor* copy(Space& home, bool share);
     /// Counting base search densities computation for branching
-    virtual void slndist(Space& home, SlnDist* dist) const;
+    virtual void solndistrib(Space& home, SolnDistrib* dist) const;
     /// TODO: Comment
-    virtual void slndistsize(SlnDistSize* s, unsigned int& domSum,
-                             unsigned int& domSumB) const;
+    virtual void solndistribsize(SolnDistribSize* s, unsigned int& domsum,
+                             unsigned int& domsum_b) const;
     /// Perform propagation
     virtual ExecStatus propagate(Space& home, const ModEventDelta& med);
     /// Post propagator for \f$\sum_{i=0}^{|x|-1}x_i-\sum_{i=0}^{|y|-1}y_i=c\f$
@@ -736,10 +736,10 @@ namespace Gecode { namespace Int { namespace Linear {
     /// Create copy during cloning
     virtual Actor* copy(Space& home, bool share);
     /// Counting base search densities computation for branching
-    virtual void slndist(Space& home, SlnDist* dist) const;
+    virtual void solndistrib(Space& home, SolnDistrib* dist) const;
     /// TODO: Comment
-    virtual void slndistsize(SlnDistSize* s, unsigned int& domSum,
-                             unsigned int& domSumB) const;
+    virtual void solndistribsize(SolnDistribSize* s, unsigned int& domsum,
+                             unsigned int& domsum_b) const;
     /// Perform propagation
     virtual ExecStatus propagate(Space& home, const ModEventDelta& med);
     /// Post propagator for \f$\sum_{i=0}^{|x|-1}x_i-\sum_{i=0}^{|y|-1}y_i\leq c\f$

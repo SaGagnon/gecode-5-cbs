@@ -395,15 +395,15 @@ namespace Gecode { namespace Int { namespace Linear {
 
   template<class Val, class P, class N>
   void
-  Eq<Val,P,N>::slndist(Space& home, SlnDist* dist) const {
+  Eq<Val,P,N>::solndistrib(Space& home, SolnDistrib* dist) const {
     cbslinear(home,this->id(),dist,x,y,c,c);
   };
 
   template<class Val, class P, class N>
   void
-  Eq<Val,P,N>::slndistsize(SlnDistSize* size, unsigned int& domSum,
-                           unsigned int& domSumB) const {
-    nonAssignedSize(size, x, y, domSum, domSumB);
+  Eq<Val,P,N>::solndistribsize(SolnDistribSize* size, unsigned int& domsum,
+                           unsigned int& domsum_b) const {
+    nonAssignedSize(size, x, y, domsum, domsum_b);
   };
 
   template<class Val, class P, class N>
@@ -760,7 +760,7 @@ namespace Gecode { namespace Int { namespace Linear {
 
   template<class Val, class P, class N>
   void
-  Lq<Val,P,N>::slndist(Space& home, SlnDist* dist) const {
+  Lq<Val,P,N>::solndistrib(Space& home, SolnDistrib* dist) const {
     int lb=0;
     for (int i=0; i<x.size(); i++)
       lb += x[i].min();
@@ -773,9 +773,9 @@ namespace Gecode { namespace Int { namespace Linear {
 
   template<class Val, class P, class N>
   void
-  Lq<Val,P,N>::slndistsize(SlnDistSize* size, unsigned int& domSum,
-                           unsigned int& domSumB) const {
-    nonAssignedSize(size, x, y, domSum, domSumB);
+  Lq<Val,P,N>::solndistribsize(SolnDistribSize* size, unsigned int& domsum,
+                           unsigned int& domsum_b) const {
+    nonAssignedSize(size, x, y, domsum, domsum_b);
   };
 
   template<class Val, class P, class N>

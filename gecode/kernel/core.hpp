@@ -1031,7 +1031,7 @@ namespace Gecode {
   /**
    * \brief Interface class to set densities for each variable and value.
    */
-  class SlnDist {
+  class SolnDistrib {
   public:
     //TODO: Name
     enum Type {
@@ -1040,7 +1040,7 @@ namespace Gecode {
     };
   public:
     virtual bool compute(unsigned int var_id) const = 0;
-    virtual void marginaldist(unsigned int prop_id,
+    virtual void marginaldistrib(unsigned int prop_id,
                               unsigned int var_id, int val,
                               double density) = 0;
     virtual void supportsize(unsigned int prop_id, double count) = 0;
@@ -1048,7 +1048,7 @@ namespace Gecode {
   };
 
   // TODO: Briefing et meilleur nom
-  class SlnDistSize {
+  class SolnDistribSize {
   public:
     virtual bool inbrancher(unsigned int var_id) const = 0;
   };
@@ -1249,10 +1249,10 @@ namespace Gecode {
     /// Return the accumlated failure count
     double afc(void) const;
     /// Compute solution distribution for the given propagator
-    virtual void slndist(Space& home, SlnDist* dist) const;
+    virtual void solndistrib(Space& home, SolnDistrib* dist) const;
     /// TODO: Comment
-    virtual void slndistsize(SlnDistSize* s, unsigned int& domSum,
-                             unsigned int& domSumB) const;
+    virtual void solndistribsize(SolnDistribSize* s, unsigned int& domsum,
+                             unsigned int& domsum_b) const;
     //@}
     /// \name Id and group support
     //@{
@@ -3628,14 +3628,14 @@ namespace Gecode {
   }
 
   forceinline void
-  Propagator::slndist(Space&, SlnDist*) const {}
+  Propagator::solndistrib(Space&, SolnDistrib*) const {}
 
 
   forceinline void
-  Propagator::slndistsize(SlnDistSize*, unsigned int& domSum,
-                          unsigned int& domSumB) const {
-    domSum = 0;
-    domSumB = 0;
+  Propagator::solndistribsize(SolnDistribSize*, unsigned int& domsum,
+                          unsigned int& domsum_b) const {
+    domsum = 0;
+    domsum_b = 0;
   }
 
   forceinline unsigned int

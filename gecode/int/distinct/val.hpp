@@ -158,15 +158,15 @@ namespace Gecode { namespace Int { namespace Distinct {
 
   template<class View>
   void
-  Val<View>::slndist(Space& home, SlnDist* dist) const {
+  Val<View>::solndistrib(Space& home, SolnDistrib* dist) const {
     cbsdistinct(home,this->id(),x,dist);
   }
 
   template<class View>
   void
-  Val<View>::slndistsize(SlnDistSize* s, unsigned int& domSum,
-                         unsigned int& domSumB) const {
-    cbssize(x,s,domSum,domSumB);
+  Val<View>::solndistribsize(SolnDistribSize* s, unsigned int& domsum,
+                         unsigned int& domsum_b) const {
+    cbssize(x,s,domsum,domsum_b);
   }
 
   template<class View>

@@ -32,7 +32,7 @@
 
 
 //#define VAL_TO_VAR
-#define BACKUP
+//#define BACKUP
 
 namespace Gecode { namespace Int { namespace Distinct {
 
@@ -241,20 +241,16 @@ namespace Gecode { namespace Int { namespace Distinct {
       return liangUpdate[val] / getLiangBaiFactor(idx, varSize-1);
     }
     // TODO: Renaming et commentaire
-    void getBestPosValDens(int& pos, int& val, double& dens) const {
-      pos = -1;
-      dens = 0;
+    template<class View>
+    void TransmitBestPosValDens(SolnDistrib* dist, unsigned int prop_id,
+                                const ViewArray<View>& x ) const {
       for (int v=best.getMin(); v<=best.getMax(); v++) {
         if (best[v].pos != -1) {
           double mU = getMincUpdate(v, best[v].domsize);
           double lU = ::sqrt(
             getLiangUpdate(v, (unsigned int)best[v].pos, best[v].domsize));
           double _dens = std::min(mU,lU);
-          if (_dens > dens) {
-            pos = best[v].pos;
-            val = v;
-            dens = _dens;
-          }
+          dist->marginaldistrib(prop_id, x[best[v].pos].id(), v, _dens);
         }
       }
     }
@@ -354,10 +350,7 @@ namespace Gecode { namespace Int { namespace Distinct {
 
     if (dist->type() == SolnDistrib::MAX_PER_PROP) {
       ValToUpdate valToUpdate(x, minVal, maxVal);
-      int pos; int val; double dens;
-      valToUpdate.getBestPosValDens(pos, val, dens);
-      assert(pos != -1 && dens != 0);
-      dist->marginaldistrib(prop_id, x[pos].id(), val, dens);
+      valToUpdate.TransmitBestPosValDens(dist, prop_id, x);
     } else if (dist->type() == SolnDistrib::ALL) {
       assert(!x.assigned());
 

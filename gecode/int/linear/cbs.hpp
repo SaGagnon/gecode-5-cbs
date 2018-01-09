@@ -32,7 +32,7 @@ namespace Gecode { namespace Int { namespace Linear {
 
   template<class P, class N>
   forceinline void
-  nonAssignedSize(SolnDistribSize* size,
+  nonAssignedSize(InModelDistrib in,
                   const ViewArray<P>& x, const ViewArray<N>& y,
                   unsigned int& domsum, unsigned int& domsum_b) {
     domsum = 0;
@@ -40,14 +40,14 @@ namespace Gecode { namespace Int { namespace Linear {
     for (int i=0; i<x.size(); i++) {
       if (!x[i].assigned()) {
         domsum += x[i].size();
-        if (size->inbrancher(x[i].id()))
+        if (in(x[i].id()))
           domsum_b += x[i].size();
       }
     }
     for (int i=0; i<y.size(); i++) {
       if (!y[i].assigned()) {
         domsum += y[i].size();
-        if (size->inbrancher(y[i].id()))
+        if (in(y[i].id()))
           domsum_b += y[i].size();
       }
     }
@@ -158,7 +158,7 @@ template<class View>
   forceinline void
   approx_dens_for_array(Space& home, unsigned int prop_id,
                         const ViewArray<View>& a, bool P,
-                        SolnDistrib* dist, double mean, double variance) {
+                        MarginalDistrib mdistrib, double mean, double variance) {
     // For every variable in the domain of ViewArray viewArray
     Region r(home);
     ViewArray<View> viewArray(r,a);
@@ -178,7 +178,7 @@ template<class View>
 //    unsigned int _reuse_count = 0;
     for (int i = 0; i < viewArray.size(); i++) {
       if (viewArray[i].assigned()) continue;
-      if(!dist->compute(viewArray[i].id())) continue;
+//      if(!dist->compute(viewArray[i].id())) continue;
 
       if (i == 0 || !comp(viewArray[i], viewArray[i - 1], true)) {
         backup.resize(0);
@@ -215,7 +215,7 @@ template<class View>
             Record r;
             r.val = viewArray[i].baseval(val.val());
             r.dens = approx_dens_a[j] / approx_sum;
-            dist->marginaldistrib(prop_id, viewArray[i].id(), r.val, r.dens);
+            mdistrib(prop_id, viewArray[i].id(), r.val, r.dens);
             backup.push_back(r);
             j++;
           }
@@ -223,7 +223,7 @@ template<class View>
       } else {
 //        _reuse_count++;
         for (int j=0; j<backup.size(); j++) {
-          dist->marginaldistrib(prop_id, viewArray[i].id(), backup[j].val,
+          mdistrib(prop_id, viewArray[i].id(), backup[j].val,
                              backup[j].dens);
         }
       }
@@ -233,11 +233,11 @@ template<class View>
 
   template<> forceinline void
   approx_dens_for_array(Space&, unsigned int, const ViewArray<NoView>&, bool,
-                        SolnDistrib*, double, double) {}
+                        MarginalDistrib, double, double) {}
 
   template<class P, class N>
   void
-  cbslinear(Space& home, unsigned int prop_id, SolnDistrib* dist,
+  cbslinear(Space& home, unsigned int prop_id, MarginalDistrib mdistrib,
             const ViewArray<P>& x, const ViewArray<N>& y,
             int lb, int ub) {
 //    {
@@ -263,8 +263,8 @@ template<class View>
     double mean, variance;
     MV_dist(lb, ub, x, y, mean, variance);
 
-    approx_dens_for_array(home,prop_id,x,true,dist,mean,variance);
-    approx_dens_for_array(home,prop_id,y,false,dist,mean,variance);
+    approx_dens_for_array(home,prop_id,x,true,mdistrib,mean,variance);
+    approx_dens_for_array(home,prop_id,y,false,mdistrib,mean,variance);
   }
 
 }}}

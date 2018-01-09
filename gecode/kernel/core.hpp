@@ -1026,33 +1026,6 @@ namespace Gecode {
     ~PostInfo(void);
   };
 
-
-
-  /**
-   * \brief Interface class to set densities for each variable and value.
-   */
-  class SolnDistrib {
-  public:
-    //TODO: Name
-    enum Type {
-      ALL,
-      MAX_PER_PROP
-    };
-  public:
-    virtual bool compute(unsigned int var_id) const = 0;
-    virtual void marginaldistrib(unsigned int prop_id,
-                              unsigned int var_id, int val,
-                              double density) = 0;
-    virtual void supportsize(unsigned int prop_id, double count) = 0;
-    virtual Type type() const = 0;
-  };
-
-  // TODO: Briefing et meilleur nom
-  class SolnDistribSize {
-  public:
-    virtual bool inbrancher(unsigned int var_id) const = 0;
-  };
-
   /**
    * \brief Propagate trace information
    */
@@ -1115,7 +1088,17 @@ namespace Gecode {
     /// Return alternative
     unsigned int alternative(void) const;
   };
- 
+
+  typedef std::function<void(unsigned int prop_id, unsigned int var_id,
+                             int val, double dens)> MarginalDistrib;
+
+  enum SolnDistribCalc {
+    ALL,
+    MAX_PER_PROP
+  };
+
+  typedef std::function<bool(unsigned int var_id)> InModelDistrib;
+
  /**
    * \brief Base-class for propagators
    * \ingroup TaskActor
@@ -1248,11 +1231,28 @@ namespace Gecode {
     //@{
     /// Return the accumlated failure count
     double afc(void) const;
-    /// Compute solution distribution for the given propagator
-    virtual void solndistrib(Space& home, SolnDistrib* dist) const;
-    /// TODO: Comment
-    virtual void solndistribsize(SolnDistribSize* s, unsigned int& domsum,
-                             unsigned int& domsum_b) const;
+    /**
+     * \brief Trigger counting-based search computation
+     *
+     * Computes the solution densities for every variable and value in the
+     * propagator.
+     *
+     * All variable-value-density triplets must be transfered one by one by
+     * TODO
+     *
+     */
+    virtual void solndistrib(Space& home, MarginalDistrib mdistrib, SolnDistribCalc sdc = ALL ) const;
+    /**
+     * \brief Query sum of variable cardinalities
+     *
+     * \param domsum   Sum of all variable cardinalities
+
+     * \param domsum_b Sum of all variable cardinalities
+     *                 where s->inbrancher is true
+     *
+     */
+    virtual void solndistribsize(InModelDistrib in, unsigned int& domsum,
+                                 unsigned int& domsum_c) const;
     //@}
     /// \name Id and group support
     //@{
@@ -3628,12 +3628,11 @@ namespace Gecode {
   }
 
   forceinline void
-  Propagator::solndistrib(Space&, SolnDistrib*) const {}
-
+  Propagator::solndistrib(Space&, MarginalDistrib, SolnDistribCalc) const {}
 
   forceinline void
-  Propagator::solndistribsize(SolnDistribSize*, unsigned int& domsum,
-                          unsigned int& domsum_b) const {
+  Propagator::solndistribsize(InModelDistrib, unsigned int& domsum,
+                              unsigned int& domsum_b) const {
     domsum = 0;
     domsum_b = 0;
   }

@@ -592,9 +592,10 @@ namespace Gecode { namespace Int { namespace Linear {
     /// Create copy during cloning
     virtual Actor* copy(Space& home, bool share);
     /// Counting base search densities computation for branching
-    virtual void solndistrib(Space& home, SolnDistrib* dist) const;
+    virtual void solndistrib(Space& home, MarginalDistrib mdistrib,
+                             SolnDistribCalc sdc) const;
     /// TODO: Comment
-    virtual void solndistribsize(SolnDistribSize* s, unsigned int& domsum,
+    virtual void solndistribsize(InModelDistrib in, unsigned int& domsum,
                              unsigned int& domsum_b) const;
     /// Perform propagation
     virtual ExecStatus propagate(Space& home, const ModEventDelta& med);
@@ -736,9 +737,10 @@ namespace Gecode { namespace Int { namespace Linear {
     /// Create copy during cloning
     virtual Actor* copy(Space& home, bool share);
     /// Counting base search densities computation for branching
-    virtual void solndistrib(Space& home, SolnDistrib* dist) const;
+    virtual void solndistrib(Space& home, MarginalDistrib mdistrib,
+                             SolnDistribCalc sdc) const;
     /// TODO: Comment
-    virtual void solndistribsize(SolnDistribSize* s, unsigned int& domsum,
+    virtual void solndistribsize(InModelDistrib in, unsigned int& domsum,
                              unsigned int& domsum_b) const;
     /// Perform propagation
     virtual ExecStatus propagate(Space& home, const ModEventDelta& med);

@@ -248,8 +248,8 @@ namespace Gecode { namespace Int { namespace Extensional {
    */
   template<class View, class Val, class Degree, class StateIdx>
   forceinline void
-  LayeredGraph<View,Val,Degree,StateIdx>::solndistrib(Space& home,
-                                                  SolnDistrib* dist) const {
+  LayeredGraph<View,Val,Degree,StateIdx>
+  ::solndistrib(Space& home, MarginalDistrib mdistrib, SolnDistribCalc sdc) const {
     if (layers[0].states == NULL)
       const_cast<LayeredGraph<View,Val,Degree,StateIdx>*>(this)
         ->alloc_state(home);
@@ -292,7 +292,7 @@ namespace Gecode { namespace Int { namespace Extensional {
 
     // Number of possible path in the layered graph
     const double n_paths = statesCnt[0][0].o_paths;
-    dist->supportsize(id(), n_paths);
+//    dist->supportsize(id(), n_paths);
 
   //     DEBUG =================================================================
   //    int max_n_states = 0;
@@ -336,7 +336,7 @@ namespace Gecode { namespace Int { namespace Extensional {
         }
         double dens = (double)count / n_paths;
         assert(n_paths != 0);
-        dist->marginaldistrib(id(), l->x.id(), l->x.baseval(s->val), dens);
+        mdistrib(id(), l->x.id(), l->x.baseval(s->val), dens);
   //        std::cout << dens << std::endl;
       }
     }
@@ -344,7 +344,7 @@ namespace Gecode { namespace Int { namespace Extensional {
 
   template<class View, class Val, class Degree, class StateIdx>
   forceinline void
-  LayeredGraph<View,Val,Degree,StateIdx>::solndistribsize(SolnDistribSize* size,
+  LayeredGraph<View,Val,Degree,StateIdx>::solndistribsize(InModelDistrib in,
                                                       unsigned int& domsum,
                                                       unsigned int& domsum_b) const {
     domsum = 0;
@@ -352,7 +352,7 @@ namespace Gecode { namespace Int { namespace Extensional {
     for (int i=0; i<n; i++) {
       if (!layers[i].x.assigned()) {
         domsum += layers[i].x.size();
-        if (size->inbrancher(layers[i].x.id()))
+        if (in(layers[i].x.id()))
           domsum_b += layers[i].x.size();
       }
     }

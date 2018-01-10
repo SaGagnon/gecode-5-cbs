@@ -395,16 +395,16 @@ namespace Gecode { namespace Int { namespace Linear {
 
   template<class Val, class P, class N>
   void
-  Eq<Val,P,N>::solndistrib(Space& home, MarginalDistrib mdistrib,
-                           SolnDistribCalc sdc) const {
-    cbslinear(home,this->id(),mdistrib,x,y,c,c);
+  Eq<Val,P,N>::solndistrib(Space& home, Propagator::SendMarginalDistrib send,
+                           Propagator::SolnDistribCalc sdc) const {
+    cbslinear(home,this->id(),send,x,y,c,c);
   };
 
   template<class Val, class P, class N>
   void
-  Eq<Val,P,N>::solndistribsize(InModelDistrib in, unsigned int& domsum,
-                           unsigned int& domsum_b) const {
-    nonAssignedSize(in, x, y, domsum, domsum_b);
+  Eq<Val,P,N>::marginaldistribsize(Propagator::InDecision in, unsigned int& size,
+                           unsigned int& size_b) const {
+    nonAssignedSize(in, x, y, size, size_b);
   };
 
   template<class Val, class P, class N>
@@ -761,8 +761,8 @@ namespace Gecode { namespace Int { namespace Linear {
 
   template<class Val, class P, class N>
   void
-  Lq<Val,P,N>::solndistrib(Space& home, MarginalDistrib mdistrib,
-                           SolnDistribCalc sdc) const {
+  Lq<Val,P,N>::solndistrib(Space& home, Propagator::SendMarginalDistrib send,
+                           Propagator::SolnDistribCalc sdc) const {
     int lb=0;
     for (int i=0; i<x.size(); i++)
       lb += x[i].min();
@@ -770,14 +770,14 @@ namespace Gecode { namespace Int { namespace Linear {
       lb -= y[i].max();
 
     lb /= x.size() + y.size();
-    cbslinear(home,this->id(),mdistrib,x,y,lb,c);
+    cbslinear(home,this->id(),send,x,y,lb,c);
   };
 
   template<class Val, class P, class N>
   void
-  Lq<Val,P,N>::solndistribsize(InModelDistrib in, unsigned int& domsum,
-                           unsigned int& domsum_b) const {
-    nonAssignedSize(in, x, y, domsum, domsum_b);
+  Lq<Val,P,N>::marginaldistribsize(Propagator::InDecision in, unsigned int& size,
+                           unsigned int& size_b) const {
+    nonAssignedSize(in, x, y, size, size_b);
   };
 
   template<class Val, class P, class N>

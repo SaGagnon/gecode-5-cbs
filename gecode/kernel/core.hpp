@@ -1089,16 +1089,6 @@ namespace Gecode {
     unsigned int alternative(void) const;
   };
 
-  typedef std::function<void(unsigned int prop_id, unsigned int var_id,
-                             int val, double dens)> MarginalDistrib;
-
-  enum SolnDistribCalc {
-    ALL,
-    MAX_PER_PROP
-  };
-
-  typedef std::function<bool(unsigned int var_id)> InModelDistrib;
-
  /**
    * \brief Base-class for propagators
    * \ingroup TaskActor
@@ -1231,28 +1221,33 @@ namespace Gecode {
     //@{
     /// Return the accumlated failure count
     double afc(void) const;
+    //@}
+    /// \name Marginal distribution
+    //@{
+    /// Type of solution distribution calculation
+    enum SolnDistribCalc { ALL, MAX_PER_PROP };
     /**
-     * \brief Trigger counting-based search computation
+     * \brief Solution distribution
      *
-     * Computes the solution densities for every variable and value in the
-     * propagator.
-     *
-     * All variable-value-density triplets must be transfered one by one by
-     * TODO
-     *
+     * Computes the marginal distribution for every variable and value in the
+     * propagator. A callback is used to transmit each result.
      */
-    virtual void solndistrib(Space& home, MarginalDistrib mdistrib, SolnDistribCalc sdc = ALL ) const;
+    /// Signature for transmitting marginal distrubtions
+    typedef std::function<void(unsigned int prop_id, unsigned int var_id,
+                               int val, double dens)> SendMarginalDistrib;
+    virtual void solndistrib(Space& home, SendMarginalDistrib send,
+                             SolnDistribCalc sdc = ALL ) const;
     /**
-     * \brief Query sum of variable cardinalities
+     * \brief Size of marginal distribution
      *
-     * \param domsum   Sum of all variable cardinalities
-
-     * \param domsum_b Sum of all variable cardinalities
-     *                 where s->inbrancher is true
-     *
+     * \param size   Size of the constraint's marginal distribution
+     * \param size_b Size of subset of marginal distribution for variables
+     *               involved in branching decisions
      */
-    virtual void solndistribsize(InModelDistrib in, unsigned int& domsum,
-                                 unsigned int& domsum_c) const;
+    /// Signature for testing if variables are candidates to branching decisions
+    typedef std::function<bool(unsigned int var_id)> InDecision;
+    virtual void marginaldistribsize(InDecision in, unsigned int& size,
+                                     unsigned int& size_b) const;
     //@}
     /// \name Id and group support
     //@{
@@ -3628,13 +3623,13 @@ namespace Gecode {
   }
 
   forceinline void
-  Propagator::solndistrib(Space&, MarginalDistrib, SolnDistribCalc) const {}
+  Propagator::solndistrib(Space&, SendMarginalDistrib, SolnDistribCalc) const {}
 
   forceinline void
-  Propagator::solndistribsize(InModelDistrib, unsigned int& domsum,
-                              unsigned int& domsum_b) const {
-    domsum = 0;
-    domsum_b = 0;
+  Propagator::marginaldistribsize(InDecision, unsigned int& size,
+                                  unsigned int& size_b) const {
+    size = 0;
+    size_b = 0;
   }
 
   forceinline unsigned int

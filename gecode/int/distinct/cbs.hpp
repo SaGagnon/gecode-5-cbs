@@ -242,7 +242,8 @@ namespace Gecode { namespace Int { namespace Distinct {
     }
     // TODO: Renaming et commentaire
     template<class View>
-    void TransmitBestPosValDens(MarginalDistrib mdistrib, unsigned int prop_id,
+    void TransmitBestPosValDens(Propagator::SendMarginalDistrib send,
+                                unsigned int prop_id,
                                 const ViewArray<View>& x ) const {
       for (int v=best.getMin(); v<=best.getMax(); v++) {
         if (best[v].pos != -1) {
@@ -250,7 +251,7 @@ namespace Gecode { namespace Int { namespace Distinct {
           double lU = ::sqrt(
             getLiangUpdate(v, (unsigned int)best[v].pos, best[v].domsize));
           double _dens = std::min(mU,lU);
-          mdistrib(prop_id, x[best[v].pos].id(), v, _dens);
+          send(prop_id, x[best[v].pos].id(), v, _dens);
         }
       }
     }
@@ -341,17 +342,18 @@ namespace Gecode { namespace Int { namespace Distinct {
 
   template<class View>
   void cbsdistinct(Space& home, unsigned int prop_id, const ViewArray<View>& x,
-                   MarginalDistrib mdistrib, SolnDistribCalc sdc) {
+                   Propagator::SendMarginalDistrib send,
+                   Propagator::SolnDistribCalc sdc) {
     if(!computation_to_do(x))
       return;
 
     int minVal, maxVal;
     min_max_dom(x, minVal, maxVal);
 
-    if (sdc == MAX_PER_PROP) {
+    if (sdc == Propagator::MAX_PER_PROP) {
       ValToUpdate valToUpdate(x, minVal, maxVal);
-      valToUpdate.TransmitBestPosValDens(mdistrib, prop_id, x);
-    } else if (sdc == ALL) {
+      valToUpdate.TransmitBestPosValDens(send, prop_id, x);
+    } else if (sdc == Propagator::ALL) {
       assert(!x.assigned());
 
       Region r(home);
@@ -431,7 +433,7 @@ namespace Gecode { namespace Int { namespace Distinct {
               solcounts(val.val()) / normalization
             };
             throw_if_inf(rec.dens);
-            mdistrib(prop_id, viewArray[i].id(), rec.val,
+            send(prop_id, viewArray[i].id(), rec.val,
                                           rec.dens);
 #ifdef BACKUP
             backup.push_back(rec);
@@ -451,15 +453,15 @@ namespace Gecode { namespace Int { namespace Distinct {
   }
 
   template<class View>
-  void cbssize(const ViewArray<View>& x, InModelDistrib in,
-               unsigned int& domsum, unsigned int& domsum_b) {
-    domsum = 0;
-    domsum_b = 0;
+  void cbssize(const ViewArray<View>& x, Propagator::InDecision in,
+               unsigned int& size, unsigned int& size_b) {
+    size = 0;
+    size_b = 0;
     for (const auto& v : x) {
       if (!v.assigned()) {
-        domsum += v.size();
+        size += v.size();
         if (in(v.id()))
-          domsum_b += v.size();
+          size_b += v.size();
       }
     }
   }

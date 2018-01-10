@@ -32,23 +32,23 @@ namespace Gecode { namespace Int { namespace Linear {
 
   template<class P, class N>
   forceinline void
-  nonAssignedSize(InModelDistrib in,
+  nonAssignedSize(Propagator::InDecision in,
                   const ViewArray<P>& x, const ViewArray<N>& y,
-                  unsigned int& domsum, unsigned int& domsum_b) {
-    domsum = 0;
-    domsum_b = 0;
+                  unsigned int& size, unsigned int& size_b) {
+    size = 0;
+    size_b = 0;
     for (int i=0; i<x.size(); i++) {
       if (!x[i].assigned()) {
-        domsum += x[i].size();
+        size += x[i].size();
         if (in(x[i].id()))
-          domsum_b += x[i].size();
+          size_b += x[i].size();
       }
     }
     for (int i=0; i<y.size(); i++) {
       if (!y[i].assigned()) {
-        domsum += y[i].size();
+        size += y[i].size();
         if (in(y[i].id()))
-          domsum_b += y[i].size();
+          size_b += y[i].size();
       }
     }
   }
@@ -158,7 +158,8 @@ template<class View>
   forceinline void
   approx_dens_for_array(Space& home, unsigned int prop_id,
                         const ViewArray<View>& a, bool P,
-                        MarginalDistrib mdistrib, double mean, double variance) {
+                        Propagator::SendMarginalDistrib send,
+                        double mean, double variance) {
     // For every variable in the domain of ViewArray viewArray
     Region r(home);
     ViewArray<View> viewArray(r,a);
@@ -215,7 +216,7 @@ template<class View>
             Record r;
             r.val = viewArray[i].baseval(val.val());
             r.dens = approx_dens_a[j] / approx_sum;
-            mdistrib(prop_id, viewArray[i].id(), r.val, r.dens);
+            send(prop_id, viewArray[i].id(), r.val, r.dens);
             backup.push_back(r);
             j++;
           }
@@ -223,7 +224,7 @@ template<class View>
       } else {
 //        _reuse_count++;
         for (int j=0; j<backup.size(); j++) {
-          mdistrib(prop_id, viewArray[i].id(), backup[j].val,
+          send(prop_id, viewArray[i].id(), backup[j].val,
                              backup[j].dens);
         }
       }
@@ -233,11 +234,12 @@ template<class View>
 
   template<> forceinline void
   approx_dens_for_array(Space&, unsigned int, const ViewArray<NoView>&, bool,
-                        MarginalDistrib, double, double) {}
+                        Propagator::SendMarginalDistrib, double, double) {}
 
   template<class P, class N>
   void
-  cbslinear(Space& home, unsigned int prop_id, MarginalDistrib mdistrib,
+  cbslinear(Space& home, unsigned int prop_id,
+            Propagator::SendMarginalDistrib send,
             const ViewArray<P>& x, const ViewArray<N>& y,
             int lb, int ub) {
 //    {
@@ -263,8 +265,8 @@ template<class View>
     double mean, variance;
     MV_dist(lb, ub, x, y, mean, variance);
 
-    approx_dens_for_array(home,prop_id,x,true,mdistrib,mean,variance);
-    approx_dens_for_array(home,prop_id,y,false,mdistrib,mean,variance);
+    approx_dens_for_array(home,prop_id,x,true,send,mean,variance);
+    approx_dens_for_array(home,prop_id,y,false,send,mean,variance);
   }
 
 }}}

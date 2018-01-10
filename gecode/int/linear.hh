@@ -592,11 +592,11 @@ namespace Gecode { namespace Int { namespace Linear {
     /// Create copy during cloning
     virtual Actor* copy(Space& home, bool share);
     /// Counting base search densities computation for branching
-    virtual void solndistrib(Space& home, MarginalDistrib mdistrib,
-                             SolnDistribCalc sdc) const;
+    virtual void solndistrib(Space& home, Propagator::SendMarginalDistrib send,
+                             Propagator::SolnDistribCalc sdc) const;
     /// TODO: Comment
-    virtual void solndistribsize(InModelDistrib in, unsigned int& domsum,
-                             unsigned int& domsum_b) const;
+    virtual void marginaldistribsize(Propagator::InDecision in,
+                                     unsigned int& size, unsigned int& size_b) const;
     /// Perform propagation
     virtual ExecStatus propagate(Space& home, const ModEventDelta& med);
     /// Post propagator for \f$\sum_{i=0}^{|x|-1}x_i-\sum_{i=0}^{|y|-1}y_i=c\f$
@@ -737,11 +737,11 @@ namespace Gecode { namespace Int { namespace Linear {
     /// Create copy during cloning
     virtual Actor* copy(Space& home, bool share);
     /// Counting base search densities computation for branching
-    virtual void solndistrib(Space& home, MarginalDistrib mdistrib,
-                             SolnDistribCalc sdc) const;
+    virtual void solndistrib(Space& home, Propagator::SendMarginalDistrib send,
+                             Propagator::SolnDistribCalc sdc) const;
     /// TODO: Comment
-    virtual void solndistribsize(InModelDistrib in, unsigned int& domsum,
-                             unsigned int& domsum_b) const;
+    virtual void marginaldistribsize(Propagator::InDecision in, unsigned int& size,
+                             unsigned int& size_b) const;
     /// Perform propagation
     virtual ExecStatus propagate(Space& home, const ModEventDelta& med);
     /// Post propagator for \f$\sum_{i=0}^{|x|-1}x_i-\sum_{i=0}^{|y|-1}y_i\leq c\f$

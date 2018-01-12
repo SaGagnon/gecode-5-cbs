@@ -1232,7 +1232,7 @@ namespace Gecode {
      * Computes the marginal distribution for every variable and value in the
      * propagator. A callback is used to transmit each result.
      */
-    /// Signature for transmitting marginal distrubtions
+    /// Signature for function transmitting marginal distributions
     typedef std::function<void(unsigned int prop_id, unsigned int var_id,
                                int val, double dens)> SendMarginalDistrib;
     virtual void solndistrib(Space& home, SendMarginalDistrib send,
@@ -1244,7 +1244,7 @@ namespace Gecode {
      * \param size_b Size of subset of marginal distribution for variables
      *               involved in branching decisions
      */
-    /// Signature for testing if variables are candidates to branching decisions
+    /// Signature for function testing if variables are candidates to branching decisions
     typedef std::function<bool(unsigned int var_id)> InDecision;
     virtual void marginaldistribsize(InDecision in, unsigned int& size,
                                      unsigned int& size_b) const;

@@ -1240,6 +1240,9 @@ namespace Gecode {
     /**
      * \brief Size of marginal distribution
      *
+     * TODO: This method can be removed if there's a generic way to access
+     * variables in a propagator. Please contact <samuel.gagnon92@gmail.com>
+     *
      * \param size   Size of the constraint's marginal distribution
      * \param size_b Size of subset of marginal distribution for variables
      *               involved in branching decisions

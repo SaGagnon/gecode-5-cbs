@@ -1234,23 +1234,23 @@ namespace Gecode {
      */
     /// Signature for function transmitting marginal distributions
     typedef std::function<void(unsigned int prop_id, unsigned int var_id,
-                               int val, double dens)> SendMarginalDistrib;
-    virtual void solndistrib(Space& home, SendMarginalDistrib send,
+                               int val, double dens)> SendMarginal;
+    virtual void solndistrib(Space& home, SendMarginal send,
                              SolnDistribCalc sdc = ALL ) const;
     /**
-     * \brief Size of marginal distribution
+     * \brief Sum of variable cardinalities
      *
      * TODO: This method can be removed if there's a generic way to access
      * variables in a propagator. Please contact <samuel.gagnon92@gmail.com>
      *
-     * \param size   Size of the constraint's marginal distribution
-     * \param size_b Size of subset of marginal distribution for variables
-     *               involved in branching decisions
+     * \param size   Sum of variable cardinalities
+     * \param size_b Sum of variable cardinalities for subset involved
+     *               in branching decisions
      */
     /// Signature for function testing if variables are candidates to branching decisions
     typedef std::function<bool(unsigned int var_id)> InDecision;
-    virtual void marginaldistribsize(InDecision in, unsigned int& size,
-                                     unsigned int& size_b) const;
+    virtual void domainsizesum(InDecision in, unsigned int& size,
+                               unsigned int& size_b) const;
     //@}
     /// \name Id and group support
     //@{
@@ -3626,10 +3626,10 @@ namespace Gecode {
   }
 
   forceinline void
-  Propagator::solndistrib(Space&, SendMarginalDistrib, SolnDistribCalc) const {}
+  Propagator::solndistrib(Space&, SendMarginal, SolnDistribCalc) const {}
 
   forceinline void
-  Propagator::marginaldistribsize(InDecision, unsigned int& size,
+  Propagator::domainsizesum(InDecision, unsigned int& size,
                                   unsigned int& size_b) const {
     size = 0;
     size_b = 0;

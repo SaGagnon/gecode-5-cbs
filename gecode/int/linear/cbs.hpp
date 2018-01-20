@@ -158,7 +158,7 @@ template<class View>
   forceinline void
   approx_dens_for_array(Space& home, unsigned int prop_id,
                         const ViewArray<View>& a, bool P,
-                        Propagator::SendMarginalDistrib send,
+                        Propagator::SendMarginal send,
                         double mean, double variance) {
     // For every variable in the domain of ViewArray viewArray
     Region r(home);
@@ -234,14 +234,12 @@ template<class View>
 
   template<> forceinline void
   approx_dens_for_array(Space&, unsigned int, const ViewArray<NoView>&, bool,
-                        Propagator::SendMarginalDistrib, double, double) {}
+                        Propagator::SendMarginal, double, double) {}
 
   template<class P, class N>
   void
-  cbslinear(Space& home, unsigned int prop_id,
-            Propagator::SendMarginalDistrib send,
-            const ViewArray<P>& x, const ViewArray<N>& y,
-            int lb, int ub) {
+  cbslinear(Space& home, unsigned int prop_id, Propagator::SendMarginal send,
+            const ViewArray<P>& x, const ViewArray<N>& y, int lb, int ub) {
 //    {
 //      bool compute = false;
 //      for (int i=0; i<x.size(); i++) {

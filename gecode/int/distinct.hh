@@ -75,10 +75,10 @@ namespace Gecode { namespace Int { namespace Distinct {
     Val(Space& home, bool share, Val<View>& p);
   public:
     /// Counting base search densities computation for branching
-    virtual void solndistrib(Space& home, Propagator::SendMarginalDistrib send,
+    virtual void solndistrib(Space& home, Propagator::SendMarginal send,
                              Propagator::SolnDistribCalc sdc) const;
-    virtual void marginaldistribsize(Propagator::InDecision in,
-                                     unsigned int& size, unsigned int& size_b) const;
+    virtual void domainsizesum(Propagator::InDecision in,
+                               unsigned int& size, unsigned int& size_b) const;
     /// Copy propagator during cloning
     virtual Actor*     copy(Space& home, bool share);
     /// Perform propagation
@@ -98,7 +98,7 @@ namespace Gecode { namespace Int { namespace Distinct {
    */
   template<class View>
   void cbsdistinct(Space& home, unsigned int prop_id, const ViewArray<View>& x,
-                   Propagator::SendMarginalDistrib send,
+                   Propagator::SendMarginal send,
                    Propagator::SolnDistribCalc sdc);
 
   template<class View>
@@ -166,10 +166,10 @@ namespace Gecode { namespace Int { namespace Distinct {
     Bnd(Space& home, bool share, Bnd<View>& p);
   public:
     /// Counting base search densities computation for branching
-    virtual void solndistrib(Space& home, SendMarginalDistrib send,
+    virtual void solndistrib(Space& home, SendMarginal send,
                              SolnDistribCalc sdc) const;
-    virtual void marginaldistribsize(InDecision in, unsigned int& size,
-                             unsigned int& size_b) const;
+    virtual void domainsizesum(InDecision in, unsigned int& size,
+                               unsigned int& size_b) const;
     /// Post propagator for view array \a x
     static ExecStatus post(Home home, ViewArray<View>& x);
     /// Perform propagation
@@ -290,11 +290,11 @@ namespace Gecode { namespace Int { namespace Distinct {
     Dom(Home home, ViewArray<View>& x);
   public:
     /// Counting base search densities computation for branching
-    virtual void solndistrib(Space& home, Propagator::SendMarginalDistrib send,
+    virtual void solndistrib(Space& home, Propagator::SendMarginal send,
                              Propagator::SolnDistribCalc sdc) const;
     /// TODO: Comment
-    virtual void marginaldistribsize(Propagator::InDecision in, unsigned int& size,
-                             unsigned int& size_b) const;
+    virtual void domainsizesum(Propagator::InDecision in, unsigned int& size,
+                               unsigned int& size_b) const;
     /// Perform propagation
     virtual ExecStatus propagate(Space& home, const ModEventDelta& med);
     /**

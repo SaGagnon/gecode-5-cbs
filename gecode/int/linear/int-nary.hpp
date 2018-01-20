@@ -395,15 +395,15 @@ namespace Gecode { namespace Int { namespace Linear {
 
   template<class Val, class P, class N>
   void
-  Eq<Val,P,N>::solndistrib(Space& home, Propagator::SendMarginalDistrib send,
+  Eq<Val,P,N>::solndistrib(Space& home, Propagator::SendMarginal send,
                            Propagator::SolnDistribCalc sdc) const {
     cbslinear(home,this->id(),send,x,y,c,c);
   };
 
   template<class Val, class P, class N>
   void
-  Eq<Val,P,N>::marginaldistribsize(Propagator::InDecision in, unsigned int& size,
-                           unsigned int& size_b) const {
+  Eq<Val,P,N>::domainsizesum(Propagator::InDecision in, unsigned int& size,
+                             unsigned int& size_b) const {
     nonAssignedSize(in, x, y, size, size_b);
   };
 
@@ -761,7 +761,7 @@ namespace Gecode { namespace Int { namespace Linear {
 
   template<class Val, class P, class N>
   void
-  Lq<Val,P,N>::solndistrib(Space& home, Propagator::SendMarginalDistrib send,
+  Lq<Val,P,N>::solndistrib(Space& home, Propagator::SendMarginal send,
                            Propagator::SolnDistribCalc sdc) const {
     int lb=0;
     for (int i=0; i<x.size(); i++)
@@ -775,8 +775,8 @@ namespace Gecode { namespace Int { namespace Linear {
 
   template<class Val, class P, class N>
   void
-  Lq<Val,P,N>::marginaldistribsize(Propagator::InDecision in, unsigned int& size,
-                           unsigned int& size_b) const {
+  Lq<Val,P,N>::domainsizesum(Propagator::InDecision in, unsigned int& size,
+                             unsigned int& size_b) const {
     nonAssignedSize(in, x, y, size, size_b);
   };
 

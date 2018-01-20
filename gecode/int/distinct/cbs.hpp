@@ -242,7 +242,7 @@ namespace Gecode { namespace Int { namespace Distinct {
     }
     // TODO: Renaming et commentaire
     template<class View>
-    void TransmitBestPosValDens(Propagator::SendMarginalDistrib send,
+    void TransmitBestPosValDens(Propagator::SendMarginal send,
                                 unsigned int prop_id,
                                 const ViewArray<View>& x ) const {
       for (int v=best.getMin(); v<=best.getMax(); v++) {
@@ -342,7 +342,7 @@ namespace Gecode { namespace Int { namespace Distinct {
 
   template<class View>
   void cbsdistinct(Space& home, unsigned int prop_id, const ViewArray<View>& x,
-                   Propagator::SendMarginalDistrib send,
+                   Propagator::SendMarginal send,
                    Propagator::SolnDistribCalc sdc) {
     if(!computation_to_do(x))
       return;

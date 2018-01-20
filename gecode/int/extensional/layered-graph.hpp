@@ -249,7 +249,7 @@ namespace Gecode { namespace Int { namespace Extensional {
   template<class View, class Val, class Degree, class StateIdx>
   forceinline void
   LayeredGraph<View,Val,Degree,StateIdx>
-  ::solndistrib(Space& home, SendMarginalDistrib send, SolnDistribCalc sdc) const {
+  ::solndistrib(Space& home, SendMarginal send, SolnDistribCalc sdc) const {
     if (layers[0].states == NULL)
       const_cast<LayeredGraph<View,Val,Degree,StateIdx>*>(this)
         ->alloc_state(home);
@@ -344,9 +344,9 @@ namespace Gecode { namespace Int { namespace Extensional {
 
   template<class View, class Val, class Degree, class StateIdx>
   forceinline void
-  LayeredGraph<View,Val,Degree,StateIdx>::marginaldistribsize(InDecision in,
-                                                      unsigned int& size,
-                                                      unsigned int& size_b) const {
+  LayeredGraph<View,Val,Degree,StateIdx>::domainsizesum(InDecision in,
+                                                        unsigned int& size,
+                                                        unsigned int& size_b) const {
     size = 0;
     size_b = 0;
     for (int i=0; i<n; i++) {

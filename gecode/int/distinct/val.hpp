@@ -171,6 +171,13 @@ namespace Gecode { namespace Int { namespace Distinct {
   }
 
   template<class View>
+  void
+  Val<View>::mindom(Propagator::InDecision in, unsigned int& min) const {
+    cbsmindom(x,in,min);
+  }
+
+
+  template<class View>
   Actor*
   Val<View>::copy(Space& home, bool share) {
     return new (home) Val<View>(home,share,*this);

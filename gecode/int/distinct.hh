@@ -79,6 +79,7 @@ namespace Gecode { namespace Int { namespace Distinct {
                              Propagator::SolnDistribCalc sdc) const;
     virtual void domainsizesum(Propagator::InDecision in,
                                unsigned int& size, unsigned int& size_b) const;
+    virtual void mindom(Propagator::InDecision in, unsigned int& min) const;
     /// Copy propagator during cloning
     virtual Actor*     copy(Space& home, bool share);
     /// Perform propagation
@@ -170,6 +171,7 @@ namespace Gecode { namespace Int { namespace Distinct {
                              SolnDistribCalc sdc) const;
     virtual void domainsizesum(InDecision in, unsigned int& size,
                                unsigned int& size_b) const;
+    virtual void mindom(Propagator::InDecision in, unsigned int& min) const;
     /// Post propagator for view array \a x
     static ExecStatus post(Home home, ViewArray<View>& x);
     /// Perform propagation
@@ -295,6 +297,7 @@ namespace Gecode { namespace Int { namespace Distinct {
     /// TODO: Comment
     virtual void domainsizesum(Propagator::InDecision in, unsigned int& size,
                                unsigned int& size_b) const;
+    virtual void mindom(Propagator::InDecision in, unsigned int& min) const;
     /// Perform propagation
     virtual ExecStatus propagate(Space& home, const ModEventDelta& med);
     /**

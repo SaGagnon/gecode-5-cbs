@@ -466,4 +466,17 @@ namespace Gecode { namespace Int { namespace Distinct {
     }
   }
 
+  template<class View>
+  void cbsmindom(const ViewArray<View>& x, Propagator::InDecision in,
+                 unsigned int& min) {
+    min = 0;
+    for (const auto& v : x) {
+      if (!v.assigned() && in(v.id())) {
+        if (v.size() < min || min == 0) {
+          min = v.size();
+        }
+      }
+    }
+  }
+
 }}}

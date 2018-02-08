@@ -1251,6 +1251,8 @@ namespace Gecode {
     typedef std::function<bool(unsigned int var_id)> InDecision;
     virtual void domainsizesum(InDecision in, unsigned int& size,
                                unsigned int& size_b) const;
+    /// TODO: Comment
+    virtual void mindom(InDecision in, unsigned int& min) const;
     //@}
     /// \name Id and group support
     //@{
@@ -3633,6 +3635,11 @@ namespace Gecode {
                                   unsigned int& size_b) const {
     size = 0;
     size_b = 0;
+  }
+
+  forceinline void
+  Propagator::mindom(InDecision, unsigned int& min) const {
+    min = 0;
   }
 
   forceinline unsigned int

@@ -206,6 +206,7 @@ namespace Gecode { namespace Int { namespace Extensional {
     /// TODO: Comment
     virtual void domainsizesum(InDecision in, unsigned int& size,
                                unsigned int& size_b) const;
+    virtual void mindom(Propagator::InDecision in, unsigned int& min) const;
     /// Constructor for posting
     template<class Var>
     LayeredGraph(Home home,

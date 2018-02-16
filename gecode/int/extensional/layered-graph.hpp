@@ -249,7 +249,7 @@ namespace Gecode { namespace Int { namespace Extensional {
   template<class View, class Val, class Degree, class StateIdx>
   forceinline void
   LayeredGraph<View,Val,Degree,StateIdx>
-  ::solndistrib(Space& home, SendMarginal send, SolnDistribCalc sdc) const {
+  ::solndistrib(Space& home, SendMarginal send, SolnDistribCalc) const {
     if (layers[0].states == NULL)
       const_cast<LayeredGraph<View,Val,Degree,StateIdx>*>(this)
         ->alloc_state(home);
@@ -357,6 +357,21 @@ namespace Gecode { namespace Int { namespace Extensional {
       }
     }
   }
+
+  template<class View, class Val, class Degree, class StateIdx>
+  forceinline void
+  LayeredGraph<View,Val,Degree,StateIdx>::mindom(Propagator::InDecision in,
+                                                 unsigned int& min) const {
+    min = 0;
+    for (int i=0; i<n; i++) {
+      if (!layers[i].x.assigned() && in(layers[i].x.id())) {
+        if (layers[i].x.size() < min || min == 0) {
+          min = layers[i].x.size();
+        }
+      }
+    }
+  }
+
 
   /*
    * The layered graph

@@ -597,6 +597,7 @@ namespace Gecode { namespace Int { namespace Linear {
     /// TODO: Comment
     virtual void domainsizesum(Propagator::InDecision in,
                                unsigned int& size, unsigned int& size_b) const;
+    virtual void mindom(Propagator::InDecision in, unsigned int& min) const;
     /// Perform propagation
     virtual ExecStatus propagate(Space& home, const ModEventDelta& med);
     /// Post propagator for \f$\sum_{i=0}^{|x|-1}x_i-\sum_{i=0}^{|y|-1}y_i=c\f$
@@ -742,6 +743,7 @@ namespace Gecode { namespace Int { namespace Linear {
     /// TODO: Comment
     virtual void domainsizesum(Propagator::InDecision in, unsigned int& size,
                                unsigned int& size_b) const;
+    virtual void mindom(Propagator::InDecision in, unsigned int& min) const;
     /// Perform propagation
     virtual ExecStatus propagate(Space& home, const ModEventDelta& med);
     /// Post propagator for \f$\sum_{i=0}^{|x|-1}x_i-\sum_{i=0}^{|y|-1}y_i\leq c\f$

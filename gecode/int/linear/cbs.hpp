@@ -53,6 +53,28 @@ namespace Gecode { namespace Int { namespace Linear {
     }
   }
 
+  template<class P, class N>
+  forceinline void
+  cbsmindom(Propagator::InDecision in,
+                  const ViewArray<P>& x, const ViewArray<N>& y,
+                  unsigned int& min) {
+    min = 0;
+    for (int i=0; i<x.size(); i++) {
+      if (!x[i].assigned() && in(x[i].id())) {
+        if (x[i].size() < min || min == 0) {
+          min = x[i].size();
+        }
+      }
+    }
+    for (int i=0; i<y.size(); i++) {
+      if (!y[i].assigned() && in(y[i].id())) {
+        if (y[i].size() < min || min == 0) {
+          min = y[i].size();
+        }
+      }
+    }
+  };
+
 template<class View>
   forceinline double
   boundsMean(const View& x) {
